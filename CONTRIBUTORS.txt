@@ -1,0 +1,5 @@
+This is a list that contains all people who have contributed to the project:
+ 
+Steven Dolg, steven.dolg[1at1]indoqa.com
+Alexander Eibner, alexander.eibner[1at1]indoqa.com
+Reinhard Pötz, reinhard.poetz[1at1]indoqa.com
