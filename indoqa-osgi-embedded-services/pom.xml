@@ -29,15 +29,15 @@
   <artifactId>indoqa-osgi-embedded-services</artifactId>
   <version>0.1.0-SNAPSHOT</version>
   <name>Indoqa OSGi Embedded Services</name>
-  <description>This module provides a services interfaces that can be used to connect to the world of OSGi services. 
-     The container provided by the 'indoqa-osgi-embedded-container' module automatically collects all implementations.
+  <description>
+     This module provides a services interfaces that can be used to connect to the world of OSGi services. 
+     The embedded OSGi container has to be provided with all implementations.
   </description>
 
   <dependencies>
     <dependency>
       <groupId>org.apache.felix</groupId>
       <artifactId>org.apache.felix.framework</artifactId>
-      <version>5.0.1</version>
     </dependency>
   </dependencies>
 </project>

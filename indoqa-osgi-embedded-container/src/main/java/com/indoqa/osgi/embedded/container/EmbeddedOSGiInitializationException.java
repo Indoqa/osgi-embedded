@@ -16,9 +16,7 @@
  */
 package com.indoqa.osgi.embedded.container;
 
-import com.indoqa.commons.lang.exception.IndoqaException;
-
-public class EmbeddedOSGiInitializationException extends IndoqaException {
+public class EmbeddedOSGiInitializationException extends RuntimeException {
 
     private static final long serialVersionUID = 1L;
 

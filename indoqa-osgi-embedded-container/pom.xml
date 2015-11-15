@@ -29,44 +29,40 @@
   <artifactId>indoqa-osgi-embedded-container</artifactId>
   <version>0.1.0-SNAPSHOT</version>
   <name>Indoqa OSGi Embedded Container</name>
-  <description>This module provides an embedded OSGi container that collects all available bundles from a particular directory, installs and finally starts them.</description>
+  <description>
+    This module provides an embedded OSGi container that collects all available bundles from a particular directory, 
+    installs and finally starts them.
+  </description>
 
   <dependencies>
+    <!-- OSGi Embedded -->
     <dependency>
       <groupId>com.indoqa.osgi</groupId>
       <artifactId>indoqa-osgi-embedded-services</artifactId>
-      <version>0.1.0-SNAPSHOT</version>
-    </dependency>  
+    </dependency>
+    
+    <!-- Felix -->
     <dependency>
       <groupId>org.apache.felix</groupId>
       <artifactId>org.apache.felix.framework</artifactId>
-      <version>5.0.1</version>
     </dependency>
+    
+    <!-- Dependency Injection -->
     <dependency>
       <groupId>javax.inject</groupId>
       <artifactId>javax.inject</artifactId>
-      <version>1</version>
     </dependency>
 
     <!-- Logging -->
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
-      <version>1.7.7</version>
-    </dependency>
-
-    <!-- Indoqa Commons -->
-    <dependency>
-      <groupId>com.indoqa.commons</groupId>
-      <artifactId>indoqa-commons-lang</artifactId>
-      <version>1.0.7</version>
     </dependency>
 
     <!-- Testing -->
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.12</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

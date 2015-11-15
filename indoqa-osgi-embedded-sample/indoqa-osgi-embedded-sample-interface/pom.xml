@@ -36,13 +36,12 @@
     <dependency>
       <groupId>javax.inject</groupId>
       <artifactId>javax.inject</artifactId>
-      <version>1</version>
     </dependency>
 
     <dependency>
       <groupId>com.indoqa.osgi</groupId>
       <artifactId>indoqa-osgi-embedded-services</artifactId>
-      <version>0.1.0-SNAPSHOT</version>
+      <version>${project.version}</version>
     </dependency>
   </dependencies>
 

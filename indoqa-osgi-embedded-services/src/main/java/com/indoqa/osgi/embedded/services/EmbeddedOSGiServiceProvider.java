@@ -19,8 +19,8 @@ package com.indoqa.osgi.embedded.services;
 import org.osgi.framework.BundleContext;
 
 /**
- * A service that implements this interfaces and is registered at the Indoqa Commons Embedded OSGi container will be provided with the
- * bundle context in order to get access to the OSGi service infrastructure.
+ * A service that implements this interfaces and is registered with the Embedded OSGi container will be provided with the bundle
+ * context in order to get access to the OSGi service infrastructure.
  */
 public interface EmbeddedOSGiServiceProvider {
 

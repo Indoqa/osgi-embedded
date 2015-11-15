@@ -62,7 +62,7 @@ public class OSGiEmbeddedIntegrationTest {
         this.embeddedOSGiContainer
             .setSystemPackages("com.indoqa.osgi.embedded.sample.interface,com.indoqa.osgi.embedded.sample.interfaces");
 
-        Collection<EmbeddedOSGiServiceProvider> providers = new ArrayList<EmbeddedOSGiServiceProvider>();
+        Collection<EmbeddedOSGiServiceProvider> providers = new ArrayList<>();
         this.dateServiceProvider = new DateServiceProvider();
         providers.add(this.dateServiceProvider);
         this.embeddedOSGiContainer.setEmbeddedOSGiServiceProviders(providers);

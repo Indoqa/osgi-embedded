@@ -31,6 +31,6 @@ public class Activator implements BundleActivator {
 
     @Override
     public void stop(BundleContext bundleContext) throws Exception {
-        // do nothing
+        System.out.println("--> DateService was unregistered as OSGi service.");
     }
 }
