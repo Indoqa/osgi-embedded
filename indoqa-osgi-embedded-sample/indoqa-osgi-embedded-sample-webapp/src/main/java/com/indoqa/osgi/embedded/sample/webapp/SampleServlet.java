@@ -21,6 +21,7 @@ import java.io.PrintWriter;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -31,6 +32,7 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
 import com.indoqa.osgi.embedded.sample.interfaces.DateService;
 import com.indoqa.osgi.embedded.sample.interfaces.DateServiceProvider;
 
+@WebServlet(urlPatterns = "/")
 public class SampleServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;

@@ -17,19 +17,18 @@
 -->
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:util="http://www.springframework.org/schema/util"
-       xmlns:configurator="http://cocoon.apache.org/schema/configurator"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
-                           http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd
-                           http://cocoon.apache.org/schema/configurator http://cocoon.apache.org/schema/configurator/cocoon-configurator-1.0.1.xsd">
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
+                           http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+                           ">
     
-  <!-- Activate Cocoon Spring Configurator -->
-  <configurator:settings/>
-
+  <context:annotation-config/>
+  <context:component-scan base-package="com.indoqa.osgi.embedded.sample" />
+  
   <!-- Start an embedded OSGi container -->
   <bean name="com.indoqa.osgi.embedded.container.EmbeddedOSGiContainer" class="com.indoqa.osgi.embedded.container.EmbeddedOSGiContainer">
-    <property name="bundlesDirectory" value="/tmp/test" />
-    <property name="storageDirectory" value="/tmp/felix-storage" />
+    <property name="bundlesDirectory" value="./data/bundles" />
+    <property name="storageDirectory" value="./data/storage" />
     <property name="systemPackages" value="com.indoqa.osgi.embedded.sample.interface,com.indoqa.osgi.embedded.sample.interfaces" />
   </bean>
 </beans>
