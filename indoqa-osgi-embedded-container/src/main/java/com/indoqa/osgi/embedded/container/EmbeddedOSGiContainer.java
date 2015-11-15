@@ -16,6 +16,10 @@
  */
 package com.indoqa.osgi.embedded.container;
 
+import static java.util.Collections.emptyList;
+import static org.apache.felix.framework.util.FelixConstants.SYSTEMBUNDLE_ACTIVATORS_PROP;
+import static org.osgi.framework.Constants.FRAMEWORK_SYSTEMPACKAGES_EXTRA;
+
 import java.io.File;
 import java.util.*;
 
@@ -24,11 +28,9 @@ import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 
 import org.apache.felix.framework.Felix;
-import org.apache.felix.framework.util.FelixConstants;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleException;
-import org.osgi.framework.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,13 +54,6 @@ import com.indoqa.osgi.embedded.services.EmbeddedOSGiServiceProvider;
  * <li>@see {@link #setCleanStorageOnFirstInit(boolean)} - default value is true</li>
  * <li>@see {@link #setRemoteShellPort(String)} - the port of the remote shell</li>
  * </ul>
- */
-/*
- * TODO currently an EmbeddedOSGiServiceProvider has access to the bundlecontext and uses a service tracker to access services. Good
- * idea? What happens with open servicetracker connections? Is it in our case really a problem because usually they are shut down when
- * a bundle is being deactivated. See http://www.vogella.com/articles/OSGiServices/article.html#osgiservice_aquire
- * 
- * TODO integration test
  */
 public class EmbeddedOSGiContainer {
 
@@ -85,7 +80,7 @@ public class EmbeddedOSGiContainer {
     private Felix felix = null;
 
     @Inject
-    private Collection<EmbeddedOSGiServiceProvider> embeddedOSGiServiceProviders = Collections.emptyList();
+    private Collection<EmbeddedOSGiServiceProvider> embeddedOSGiServiceProviders = emptyList();
 
     private static void checkDirectory(File directory, String type) {
         if (directory == null) {
@@ -128,6 +123,10 @@ public class EmbeddedOSGiContainer {
         this.cleanStorageOnFirstInit = cleanCacheOnInit;
     }
 
+    public void setEmbeddedOSGiServiceProviders(Collection<EmbeddedOSGiServiceProvider> embeddedOSGiServiceProviders) {
+        this.embeddedOSGiServiceProviders = embeddedOSGiServiceProviders;
+    }
+
     public void setRemoteShellPort(String remoteShellPort) {
         this.remoteShellPort = remoteShellPort;
     }
@@ -143,12 +142,12 @@ public class EmbeddedOSGiContainer {
     protected void configHostActivator(Map<String, Object> config) {
         List<BundleActivator> activators = new ArrayList<BundleActivator>();
         activators.add(this.createHostActivator());
-        config.put(FelixConstants.SYSTEMBUNDLE_ACTIVATORS_PROP, activators);
+        config.put(SYSTEMBUNDLE_ACTIVATORS_PROP, activators);
     }
 
     protected void configSystemExtraClasspath(Map<String, Object> config) {
-        config.put(Constants.FRAMEWORK_SYSTEMPACKAGES_EXTRA, this.systemPackages);
-        this.logger.info("Setting OSGi container property '" + Constants.FRAMEWORK_SYSTEMPACKAGES_EXTRA + "': " + this.systemPackages);
+        config.put(FRAMEWORK_SYSTEMPACKAGES_EXTRA, this.systemPackages);
+        this.logger.info("Setting OSGi container property '" + FRAMEWORK_SYSTEMPACKAGES_EXTRA + "': " + this.systemPackages);
     }
 
     protected Bundle[] getInstalledBundles() {

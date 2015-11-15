@@ -39,7 +39,7 @@ import org.slf4j.LoggerFactory;
  */
 public class HostActivator implements BundleActivator {
 
-    private static final String INITIAL_BUNDLES_FOLDER = "/initial-bundles/";
+    private static final String INITIAL_BUNDLES_FOLDER = "initial-bundles/";
     private static final List<String> DEFAULT_BUNDLES = new ArrayList<String>();
 
     static {

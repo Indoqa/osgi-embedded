@@ -28,7 +28,7 @@
   </parent>
 
   <artifactId>indoqa-osgi-embedded-sample-bundle</artifactId>
-  <version>1.0.0-SNAPSHOT</version>
+  <version>0.1.0-SNAPSHOT</version>
   <name>Indoqa OSGI Embedded Sample Bundle</name>
   <description>A sample bundle that implements an interface defined by 'indoqa-osgi-embedded-sample-interface' and exports it as an OSGi service.</description>
 
