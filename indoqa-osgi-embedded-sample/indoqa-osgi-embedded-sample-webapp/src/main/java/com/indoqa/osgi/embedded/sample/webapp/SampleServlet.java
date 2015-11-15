@@ -26,8 +26,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.context.support.WebApplicationContextUtils;
+import org.springframework.context.ApplicationContext;
 
 import com.indoqa.osgi.embedded.sample.interfaces.DateService;
 import com.indoqa.osgi.embedded.sample.interfaces.DateServiceProvider;
@@ -37,12 +36,12 @@ public class SampleServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
 
-    private WebApplicationContext applicationContext;
+    private ApplicationContext applicationContext;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-        this.applicationContext = WebApplicationContextUtils.getWebApplicationContext(this.getServletContext());
+        this.applicationContext = WebappIntiallizer.getApplicationContext();
     }
 
     @Override
