@@ -67,7 +67,7 @@ public class OSGiEmbeddedIntegrationTest {
     }
 
     @Test
-    public void installBundle() throws IOException {
+    public void installAndUninstallBundle() throws IOException {
         DateService[] dateServices = this.dateServiceProvider.getDateServices();
         assertEquals(0, dateServices.length);
 
