@@ -34,7 +34,6 @@ public class WebappIntiallizer implements WebApplicationInitializer {
     private static AnnotationConfigWebApplicationContext initializeSpringApplicationContext(ServletContext servletContext) {
         AnnotationConfigWebApplicationContext context = new AnnotationConfigWebApplicationContext();
         context.setServletContext(servletContext);
-        context.getEnvironment().setActiveProfiles("webapp");
         context.scan("com.indoqa.osgi.embedded.sample");
         context.refresh();
         return context;

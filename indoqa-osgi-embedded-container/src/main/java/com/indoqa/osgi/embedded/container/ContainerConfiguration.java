@@ -68,6 +68,19 @@ public class ContainerConfiguration {
 
     private String remoteShellPort = DEFAULT_REMOTE_SHELL_PORT;
 
+    private boolean remoteShellBundlesEnabled = false;
+    private boolean localShellBundlesEnabled = false;
+
+    public ContainerConfiguration enableLocalShell() {
+        this.localShellBundlesEnabled = true;
+        return this;
+    }
+
+    public ContainerConfiguration enableRemoteShell() {
+        this.remoteShellBundlesEnabled = true;
+        return this;
+    }
+
     public ContainerConfiguration setFileInstallActiveLevel(Integer activeLevel) {
         this.fileInstallActiveLevel = activeLevel;
         return this;
@@ -169,7 +182,18 @@ public class ContainerConfiguration {
         this.applyProperty(config, PROPERTY_OSGI_STORAGE_DIR, this.frameworkStorage.toAbsolutePath().toString());
 
         this.applyProperty(config, PROPERTY_OSGI_STORAGE_CLEAN, this.frameworkStorageClean);
-        this.applyProperty(config, PROPERTY_REMOTE_SHELL_PORT, this.remoteShellPort);
+
+        if (this.areRemoteShellBundlesEnabled()) {
+            this.applyProperty(config, PROPERTY_REMOTE_SHELL_PORT, this.remoteShellPort);
+        }
+    }
+
+    protected boolean areLocalShellBundlesEnabled() {
+        return this.localShellBundlesEnabled;
+    }
+
+    protected boolean areRemoteShellBundlesEnabled() {
+        return this.remoteShellBundlesEnabled;
     }
 
     private void applyProperty(Map<String, Object> config, String name, Object value) {

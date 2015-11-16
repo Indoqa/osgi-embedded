@@ -160,7 +160,8 @@ public class EmbeddedOSGiContainer {
     }
 
     private BundleActivator createHostActivator() {
-        this.hostActivator = new HostActivator();
+        this.hostActivator = new HostActivator(this.containerConfiguration.areLocalShellBundlesEnabled(),
+            this.containerConfiguration.areRemoteShellBundlesEnabled());
         return this.hostActivator;
     }
 

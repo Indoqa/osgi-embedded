@@ -18,8 +18,9 @@ package com.indoqa.osgi.embedded.container;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
@@ -37,23 +38,34 @@ import org.slf4j.LoggerFactory;
  * <li>the Felix Config Admin bundle</li>
  * </ul>
  */
-public class HostActivator implements BundleActivator {
+/* default */ class HostActivator implements BundleActivator {
 
     private static final String INITIAL_BUNDLES_FOLDER = "initial-bundles/";
-    private static final List<String> DEFAULT_BUNDLES = new ArrayList<String>();
+
+    private static final Map<String, BundleType> BUNDLES = new ConcurrentHashMap<>();
 
     static {
-        DEFAULT_BUNDLES.add("org.apache.felix.fileinstall-3.5.0.jar");
-        DEFAULT_BUNDLES.add("org.apache.felix.gogo.command-0.12.0.jar");
-        DEFAULT_BUNDLES.add("org.apache.felix.gogo.runtime-0.16.2.jar");
-        DEFAULT_BUNDLES.add("org.apache.felix.gogo.shell-0.10.0.jar");
-        DEFAULT_BUNDLES.add("org.apache.felix.shell.remote-1.1.2.jar");
-        DEFAULT_BUNDLES.add("org.apache.felix.configadmin-1.8.8.jar");
+        BUNDLES.put("org.apache.felix.fileinstall-3.5.0.jar", BundleType.MANDATORY_BUNDLE);
+        BUNDLES.put("org.apache.felix.configadmin-1.8.8.jar", BundleType.MANDATORY_BUNDLE);
+
+        BUNDLES.put("org.apache.felix.gogo.command-0.12.0.jar", BundleType.REMOTE_SHELL_BUNDLE);
+        BUNDLES.put("org.apache.felix.gogo.runtime-0.16.2.jar", BundleType.REMOTE_SHELL_BUNDLE);
+        BUNDLES.put("org.apache.felix.gogo.shell-0.10.0.jar", BundleType.REMOTE_SHELL_BUNDLE);
+
+        BUNDLES.put("org.apache.felix.shell.remote-1.1.2.jar", BundleType.LOCAL_SHELL_BUNDLE);
     }
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
+    private final boolean localShellEnabled;
+    private final boolean remoteShellEnabled;
+
     private BundleContext bundleContext;
+
+    public HostActivator(boolean localShellEnabled, boolean remoteShellEnabled) {
+        this.localShellEnabled = localShellEnabled;
+        this.remoteShellEnabled = remoteShellEnabled;
+    }
 
     public BundleContext getBundleContext() {
         return this.bundleContext;
@@ -71,8 +83,14 @@ public class HostActivator implements BundleActivator {
     public void start(BundleContext context) {
         this.bundleContext = context;
 
-        for (String bundleFileName : DEFAULT_BUNDLES) {
-            this.startBundle(bundleFileName);
+        this.startBundlesByType(BundleType.MANDATORY_BUNDLE);
+
+        if (this.localShellEnabled) {
+            this.startBundlesByType(BundleType.LOCAL_SHELL_BUNDLE);
+        }
+
+        if (this.remoteShellEnabled) {
+            this.startBundlesByType(BundleType.REMOTE_SHELL_BUNDLE);
         }
     }
 
@@ -106,5 +124,18 @@ public class HostActivator implements BundleActivator {
         }
 
         this.logger.info("Started bundle: " + bundleFileName);
+    }
+
+    private void startBundlesByType(BundleType type) {
+        for (Entry<String, BundleType> entry : BUNDLES.entrySet()) {
+            if (type.equals(entry.getValue())) {
+                this.startBundle(entry.getKey());
+            }
+        }
+    }
+
+    private enum BundleType {
+
+        MANDATORY_BUNDLE, REMOTE_SHELL_BUNDLE, LOCAL_SHELL_BUNDLE
     }
 }

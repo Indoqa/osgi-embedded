@@ -23,41 +23,38 @@ import java.nio.file.Paths;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
 
 import com.indoqa.osgi.embedded.container.ContainerConfiguration;
 import com.indoqa.osgi.embedded.container.EmbeddedOSGiContainer;
 import com.indoqa.osgi.embedded.container.EmbeddedOSGiContainerInitializationException;
 
 @Configuration
-@Profile("webapp")
 public class SampleConfig {
-
-    private static void createDirectory(Path path) {
-        try {
-            Files.createDirectories(path);
-        } catch (IOException e) {
-            throw new EmbeddedOSGiContainerInitializationException("Error while creating directory '" + path.toAbsolutePath() + "'.",
-                e);
-        }
-    }
 
     @Bean
     public EmbeddedOSGiContainer createEmbeddedOSGiContainer() {
         EmbeddedOSGiContainer embeddedOSGiContainer = new EmbeddedOSGiContainer();
+        embeddedOSGiContainer.setSystemPackages("com.indoqa.osgi.embedded.sample.interfaces");
 
-        ContainerConfiguration config = new ContainerConfiguration();
+        Path bundlesDirectory = this.initializeDirectory(Paths.get("./target/sample-bundles"));
+        Path storageDirectory = this.initializeDirectory(Paths.get("./target/sample-storage"));
+
+        ContainerConfiguration config = new ContainerConfiguration().setFileInstallDir(bundlesDirectory)
+            .setFrameworkStorage(storageDirectory)
+            .enableLocalShell()
+            .enableRemoteShell();
         embeddedOSGiContainer.setContainerConfiguration(config);
 
-        Path bundlesDirectory = Paths.get("./target/sample-bundles");
-        createDirectory(bundlesDirectory);
-        config.setFileInstallDir(bundlesDirectory);
-
-        Path storageDirectory = Paths.get("./target/sample-storage");
-        createDirectory(storageDirectory);
-        config.setFrameworkStorage(storageDirectory);
-
-        embeddedOSGiContainer.setSystemPackages("com.indoqa.osgi.embedded.sample.interfaces");
         return embeddedOSGiContainer;
+    }
+
+    private Path initializeDirectory(Path dir) {
+        try {
+            Files.createDirectories(dir);
+        } catch (IOException e) {
+            throw new EmbeddedOSGiContainerInitializationException("Error while creating directory '" + dir.toAbsolutePath() + "'.",
+                e);
+        }
+        return dir;
     }
 }
