@@ -48,9 +48,9 @@ import org.slf4j.LoggerFactory;
         BUNDLES.put("org.apache.felix.fileinstall-3.5.0.jar", BundleType.MANDATORY_BUNDLE);
         BUNDLES.put("org.apache.felix.configadmin-1.8.8.jar", BundleType.MANDATORY_BUNDLE);
 
-        BUNDLES.put("org.apache.felix.gogo.command-0.12.0.jar", BundleType.REMOTE_SHELL_BUNDLE);
+        BUNDLES.put("org.apache.felix.gogo.command-0.16.0.jar", BundleType.REMOTE_SHELL_BUNDLE);
         BUNDLES.put("org.apache.felix.gogo.runtime-0.16.2.jar", BundleType.REMOTE_SHELL_BUNDLE);
-        BUNDLES.put("org.apache.felix.gogo.shell-0.10.0.jar", BundleType.REMOTE_SHELL_BUNDLE);
+        BUNDLES.put("org.apache.felix.gogo.shell-0.12.0.jar", BundleType.REMOTE_SHELL_BUNDLE);
 
         BUNDLES.put("org.apache.felix.shell.remote-1.1.2.jar", BundleType.LOCAL_SHELL_BUNDLE);
     }
