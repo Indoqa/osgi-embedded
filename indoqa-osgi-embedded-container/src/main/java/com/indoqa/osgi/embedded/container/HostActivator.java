@@ -89,7 +89,7 @@ public class HostActivator implements BundleActivator {
         try {
             bundleInputStream.close();
         } catch (IOException e) {
-            throw new EmbeddedOSGiInitializationException("Can't initialize bundle '" + resourceName + "'.", e);
+            throw new EmbeddedOSGiContainerInitializationException("Can't initialize bundle '" + resourceName + "'.", e);
         }
     }
 
@@ -100,7 +100,7 @@ public class HostActivator implements BundleActivator {
             Bundle bundle = this.bundleContext.installBundle(bundleFileName, bundleInputStream);
             bundle.start();
         } catch (BundleException e) {
-            throw new EmbeddedOSGiInitializationException("Can't initialize bundle '" + resourceName + "'.", e);
+            throw new EmbeddedOSGiContainerInitializationException("Can't initialize bundle '" + resourceName + "'.", e);
         } finally {
             this.closeBundleInputStream(resourceName, bundleInputStream);
         }

@@ -20,7 +20,6 @@ import static java.util.Collections.emptyList;
 import static org.apache.felix.framework.util.FelixConstants.SYSTEMBUNDLE_ACTIVATORS_PROP;
 import static org.osgi.framework.Constants.FRAMEWORK_SYSTEMPACKAGES_EXTRA;
 
-import java.io.File;
 import java.util.*;
 
 import javax.annotation.PostConstruct;
@@ -43,64 +42,35 @@ import com.indoqa.osgi.embedded.services.EmbeddedOSGiServiceProvider;
  * <li>the directory that should be scanned for OSGi bundles to be installed</li>
  * <li>a collection of services that need access to the OSGi bundle context</li>
  * </ul>
- * Internally the container runs on Felix 5 and uses the FileInstall Bundle to load the extension bundles.
+ * Internally the container runs on Felix 5 and uses the FileInstall Bundle
+ * (https://felix.apache.org/documentation/subprojects/apache-felix-file-install.html) to load the extension bundles.
  * <p/>
  * This implementation allows setting following properties:
  * <ul>
- * <li>@see {@link #setBundlesDirectory(File)} - has to be set explicitly, find further information at
- * http://felix.apache.org/site/apache-felix-framework-bundle-cache.html</li>
- * <li>@see {@link #setStorageDirectory(File)} - has to be set explicitly</li>
  * <li>@see {@link #setSystemPackages(String)} - all packages that are exported to the plugins</li>
- * <li>@see {@link #setCleanStorageOnFirstInit(boolean)} - default value is true</li>
- * <li>@see {@link #setRemoteShellPort(String)} - the port of the remote shell</li>
+ * <li>@see {@link ContainerConfiguration} for the possible configuration options of the pre-installed bundles</li>
  * </ul>
  */
 public class EmbeddedOSGiContainer {
 
-    private static final String PROPERTY_FELIX_FILEINSTALL_DIR = "felix.fileinstall.dir";
-    private static final String PROPERTY_FELIX_REMOTE_SHELL_PORT = "osgi.shell.telnet.port";
-    private static final String PROPERTY_OSGI_STORAGE_DIR = "org.osgi.framework.storage";
-    private static final String PROPERTY_OSGI_STORAGE_CLEAN = "org.osgi.framework.storage.clean";
-
-    private static final boolean DEFAULT_VALUE_OSGI_STORAGE_CLEAN = true;
-    private static final String DEFAULT_REMOTE_SHELL_PORT = "6666";
-
-    private static final String VALUE_OSGI_STORAGE_CLEAN_ON_FIRST_INIT = "onFirstInit";
+    private static final String SYSTEM_PACKAGE_SEPARATOR = ",";
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private File bundlesDirectory;
-    private File storageDirectory;
-    private String systemPackages;
-    private boolean cleanStorageOnFirstInit = DEFAULT_VALUE_OSGI_STORAGE_CLEAN;
-
-    private String remoteShellPort = DEFAULT_REMOTE_SHELL_PORT;
-
-    private HostActivator hostActivator = null;
-    private Felix felix = null;
+    private ContainerConfiguration containerConfiguration = new ContainerConfiguration();
+    private StringBuilder systemPackages = new StringBuilder();
+    private HostActivator hostActivator;
+    private Felix felix;
 
     @Inject
     private Collection<EmbeddedOSGiServiceProvider> embeddedOSGiServiceProviders = emptyList();
 
-    private static void checkDirectory(File directory, String type) {
-        if (directory == null) {
-            throw new EmbeddedOSGiInitializationException("The '" + type + "' directory is not set.");
+    public void addSystemPackage(String additionalPackage) {
+        if (this.systemPackages.length() > 0) {
+            this.systemPackages.append(SYSTEM_PACKAGE_SEPARATOR);
         }
 
-        if (!directory.exists()) {
-            throw new EmbeddedOSGiInitializationException(
-                "The " + type + "  directory '" + directory.getAbsolutePath() + "' doesn't exist.");
-        }
-
-        if (!directory.isDirectory()) {
-            throw new EmbeddedOSGiInitializationException(
-                "The " + type + "  directory value '" + directory.getAbsolutePath() + "' is not a directory.");
-        }
-
-        if (!directory.canRead()) {
-            throw new EmbeddedOSGiInitializationException(
-                "The " + type + "  directory '" + directory.getAbsolutePath() + "' is not readable.");
-        }
+        this.systemPackages.append(additionalPackage);
     }
 
     @PreDestroy
@@ -115,28 +85,16 @@ public class EmbeddedOSGiContainer {
         this.initializeServiceProviders();
     }
 
-    public void setBundlesDirectory(File bundlesDirectory) {
-        this.bundlesDirectory = bundlesDirectory;
+    public void setContainerConfiguration(ContainerConfiguration containerConfiguration) {
+        this.containerConfiguration = containerConfiguration;
     }
 
-    public void setCleanStorageOnFirstInit(boolean cleanCacheOnInit) {
-        this.cleanStorageOnFirstInit = cleanCacheOnInit;
+    public void setEmbeddedOSGiServiceProviders(Collection<EmbeddedOSGiServiceProvider> providers) {
+        this.embeddedOSGiServiceProviders = providers;
     }
 
-    public void setEmbeddedOSGiServiceProviders(Collection<EmbeddedOSGiServiceProvider> embeddedOSGiServiceProviders) {
-        this.embeddedOSGiServiceProviders = embeddedOSGiServiceProviders;
-    }
-
-    public void setRemoteShellPort(String remoteShellPort) {
-        this.remoteShellPort = remoteShellPort;
-    }
-
-    public void setStorageDirectory(File storageDirectory) {
-        this.storageDirectory = storageDirectory;
-    }
-
-    public void setSystemPackages(String systemPackages) {
-        this.systemPackages = systemPackages;
+    public void setSystemPackages(CharSequence systemPackages) {
+        this.systemPackages.append(systemPackages);
     }
 
     protected void configHostActivator(Map<String, Object> config) {
@@ -146,26 +104,12 @@ public class EmbeddedOSGiContainer {
     }
 
     protected void configSystemExtraClasspath(Map<String, Object> config) {
-        config.put(FRAMEWORK_SYSTEMPACKAGES_EXTRA, this.systemPackages);
-        this.logger.info("Setting OSGi container property '" + FRAMEWORK_SYSTEMPACKAGES_EXTRA + "': " + this.systemPackages);
+        config.put(FRAMEWORK_SYSTEMPACKAGES_EXTRA, this.systemPackages.toString());
+        this.logger.info("Setting property '" + FRAMEWORK_SYSTEMPACKAGES_EXTRA + "': " + this.systemPackages);
     }
 
     protected Bundle[] getInstalledBundles() {
         return this.hostActivator.getBundles();
-    }
-
-    protected void setFrameworkDirectoryProperty(Map<String, Object> config, String property, File directory) {
-        checkDirectory(directory, property);
-
-        String path = directory.getAbsolutePath();
-        config.put(property, path);
-
-        this.logger.info("Setting framework property '" + property + "': " + path);
-    }
-
-    protected void setFrameworkProperty(Map<String, Object> config, String property, String value) {
-        config.put(property, value);
-        this.logger.info("Setting framework property '" + property + "': " + value);
     }
 
     protected void startFelix() {
@@ -178,7 +122,7 @@ public class EmbeddedOSGiContainer {
             int hashCode = System.identityHashCode(this.felix);
             this.logger.info("Embedded OSGi container has been started successfully: container-hashCode=" + hashCode);
         } catch (Exception e) {
-            throw new EmbeddedOSGiInitializationException(
+            throw new EmbeddedOSGiContainerInitializationException(
                 "Error while starting embedded OSGi container: container-hashCode=" + System.identityHashCode(this.felix), e);
         }
     }
@@ -201,30 +145,8 @@ public class EmbeddedOSGiContainer {
         }
     }
 
-    private void configFileInstallBundle(Map<String, Object> config) {
-        this.setFrameworkDirectoryProperty(config, PROPERTY_FELIX_FILEINSTALL_DIR, this.bundlesDirectory);
-    }
-
-    private void configRemoteShellBundle(Map<String, Object> config) {
-        this.setFrameworkProperty(config, PROPERTY_FELIX_REMOTE_SHELL_PORT, this.remoteShellPort);
-    }
-
-    private void configStorageCleanup(Map<String, Object> config) {
-        if (!this.cleanStorageOnFirstInit) {
-            return;
-        }
-
-        String onFirstInitValue = VALUE_OSGI_STORAGE_CLEAN_ON_FIRST_INIT;
-        config.put(PROPERTY_OSGI_STORAGE_CLEAN, onFirstInitValue);
-        this.logger.info("Setting framework property '" + PROPERTY_OSGI_STORAGE_CLEAN + "': " + onFirstInitValue);
-    }
-
-    private void configStorageDirectory(Map<String, Object> config) {
-        if (this.storageDirectory == null) {
-            return;
-        }
-
-        this.setFrameworkDirectoryProperty(config, PROPERTY_OSGI_STORAGE_DIR, this.storageDirectory);
+    private void configBundles(Map<String, Object> config) {
+        this.containerConfiguration.apply(config);
     }
 
     private Map<String, Object> configureFelixContainer() {
@@ -232,10 +154,7 @@ public class EmbeddedOSGiContainer {
 
         this.configHostActivator(config);
         this.configSystemExtraClasspath(config);
-        this.configFileInstallBundle(config);
-        this.configRemoteShellBundle(config);
-        this.configStorageDirectory(config);
-        this.configStorageCleanup(config);
+        this.configBundles(config);
 
         return config;
     }

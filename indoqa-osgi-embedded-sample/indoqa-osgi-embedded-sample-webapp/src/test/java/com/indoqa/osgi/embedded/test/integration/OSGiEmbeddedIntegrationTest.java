@@ -16,11 +16,13 @@
  */
 package com.indoqa.osgi.embedded.test.integration;
 
-import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.junit.Assert.assertEquals;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -29,6 +31,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.indoqa.osgi.embedded.container.ContainerConfiguration;
 import com.indoqa.osgi.embedded.container.EmbeddedOSGiContainer;
 import com.indoqa.osgi.embedded.sample.interfaces.DateService;
 import com.indoqa.osgi.embedded.sample.interfaces.DateServiceProvider;
@@ -47,25 +50,18 @@ public class OSGiEmbeddedIntegrationTest {
 
     @Before
     public void initializeEmbeddedOSGiContainer() throws IOException {
+        Path bundlesDirectory = this.initializeBundlesDirectory();
+        Path storageDirectory = this.initializeStorageDirectory();
+        ContainerConfiguration config = new ContainerConfiguration().setFrameworkStorage(storageDirectory)
+            .setFileInstallDir(bundlesDirectory)
+            .setFileInstallNoInitialDelay(true)
+            .setFileInstallPollIntervall(250);
+        Collection<EmbeddedOSGiServiceProvider> providers = this.initializeProviders();
+
         this.embeddedOSGiContainer = new EmbeddedOSGiContainer();
-
-        File bundlesDirectory = new File(DIR_BUNDLES);
-        bundlesDirectory.mkdirs();
-        FileUtils.cleanDirectory(bundlesDirectory);
-        this.embeddedOSGiContainer.setBundlesDirectory(bundlesDirectory);
-
-        File storageDirectory = new File(DIR_STORAGE);
-        storageDirectory.mkdirs();
-        FileUtils.cleanDirectory(storageDirectory);
-        this.embeddedOSGiContainer.setStorageDirectory(storageDirectory);
-
-        this.embeddedOSGiContainer
-            .setSystemPackages("com.indoqa.osgi.embedded.sample.interface,com.indoqa.osgi.embedded.sample.interfaces");
-
-        Collection<EmbeddedOSGiServiceProvider> providers = new ArrayList<>();
-        this.dateServiceProvider = new DateServiceProvider();
-        providers.add(this.dateServiceProvider);
+        this.embeddedOSGiContainer.setContainerConfiguration(config);
         this.embeddedOSGiContainer.setEmbeddedOSGiServiceProviders(providers);
+        this.embeddedOSGiContainer.addSystemPackage("com.indoqa.osgi.embedded.sample.interfaces");
 
         this.embeddedOSGiContainer.initialize();
     }
@@ -75,12 +71,16 @@ public class OSGiEmbeddedIntegrationTest {
         DateService[] dateServices = this.dateServiceProvider.getDateServices();
         assertEquals(0, dateServices.length);
 
-        FileUtils.copyFile(new File(DIR_SAMPLE_BUNDLE + FILE_NAME_SAMPLE_BUNDLE), new File(DIR_BUNDLES + FILE_NAME_SAMPLE_BUNDLE));
-
-        this.sleep(5);
-
+        File bundle = new File(DIR_BUNDLES + FILE_NAME_SAMPLE_BUNDLE);
+        FileUtils.copyFile(new File(DIR_SAMPLE_BUNDLE + FILE_NAME_SAMPLE_BUNDLE), bundle);
+        this.sleep(1000);
         dateServices = this.dateServiceProvider.getDateServices();
         assertEquals(1, dateServices.length);
+
+        bundle.delete();
+        this.sleep(1000);
+        dateServices = this.dateServiceProvider.getDateServices();
+        assertEquals(0, dateServices.length);
     }
 
     @After
@@ -88,9 +88,30 @@ public class OSGiEmbeddedIntegrationTest {
         this.embeddedOSGiContainer.destroy();
     }
 
-    private void sleep(int seconds) {
+    private Path initializeBundlesDirectory() throws IOException {
+        Path bundlesDirectory = Paths.get(DIR_BUNDLES);
+        Files.createDirectories(bundlesDirectory);
+        FileUtils.cleanDirectory(bundlesDirectory.toFile());
+        return bundlesDirectory;
+    }
+
+    private Collection<EmbeddedOSGiServiceProvider> initializeProviders() {
+        Collection<EmbeddedOSGiServiceProvider> providers = new ArrayList<>();
+        this.dateServiceProvider = new DateServiceProvider();
+        providers.add(this.dateServiceProvider);
+        return providers;
+    }
+
+    private Path initializeStorageDirectory() throws IOException {
+        Path storageDirectory = Paths.get(DIR_STORAGE);
+        Files.createDirectories(storageDirectory);
+        FileUtils.cleanDirectory(storageDirectory.toFile());
+        return storageDirectory;
+    }
+
+    private void sleep(int millis) {
         try {
-            Thread.sleep(SECONDS.toMillis(seconds));
+            Thread.sleep(millis);
         } catch (InterruptedException e) {
             // do nothing
         }

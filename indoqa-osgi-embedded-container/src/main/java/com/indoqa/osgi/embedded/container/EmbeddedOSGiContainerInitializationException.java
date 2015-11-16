@@ -16,15 +16,15 @@
  */
 package com.indoqa.osgi.embedded.container;
 
-public class EmbeddedOSGiInitializationException extends RuntimeException {
+public class EmbeddedOSGiContainerInitializationException extends RuntimeException {
 
     private static final long serialVersionUID = 1L;
 
-    public EmbeddedOSGiInitializationException(String message) {
+    public EmbeddedOSGiContainerInitializationException(String message) {
         super(message);
     }
 
-    public EmbeddedOSGiInitializationException(String message, Throwable e) {
+    public EmbeddedOSGiContainerInitializationException(String message, Throwable e) {
         super(message, e);
     }
 }

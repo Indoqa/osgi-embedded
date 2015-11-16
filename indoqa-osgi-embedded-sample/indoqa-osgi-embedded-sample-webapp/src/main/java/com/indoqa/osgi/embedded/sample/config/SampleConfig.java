@@ -16,30 +16,48 @@
  */
 package com.indoqa.osgi.embedded.sample.config;
 
-import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 
+import com.indoqa.osgi.embedded.container.ContainerConfiguration;
 import com.indoqa.osgi.embedded.container.EmbeddedOSGiContainer;
+import com.indoqa.osgi.embedded.container.EmbeddedOSGiContainerInitializationException;
 
 @Configuration
+@Profile("webapp")
 public class SampleConfig {
+
+    private static void createDirectory(Path path) {
+        try {
+            Files.createDirectories(path);
+        } catch (IOException e) {
+            throw new EmbeddedOSGiContainerInitializationException("Error while creating directory '" + path.toAbsolutePath() + "'.",
+                e);
+        }
+    }
 
     @Bean
     public EmbeddedOSGiContainer createEmbeddedOSGiContainer() {
         EmbeddedOSGiContainer embeddedOSGiContainer = new EmbeddedOSGiContainer();
 
-        File bundlesDirectory = new File("./target/sample-bundles");
-        bundlesDirectory.mkdirs();
-        embeddedOSGiContainer.setBundlesDirectory(bundlesDirectory);
+        ContainerConfiguration config = new ContainerConfiguration();
+        embeddedOSGiContainer.setContainerConfiguration(config);
 
-        File storageDirectory = new File("./target/sample-storage");
-        storageDirectory.mkdirs();
-        embeddedOSGiContainer.setStorageDirectory(storageDirectory);
+        Path bundlesDirectory = Paths.get("./target/sample-bundles");
+        createDirectory(bundlesDirectory);
+        config.setFileInstallDir(bundlesDirectory);
 
-        embeddedOSGiContainer
-            .setSystemPackages("com.indoqa.osgi.embedded.sample.interface,com.indoqa.osgi.embedded.sample.interfaces");
+        Path storageDirectory = Paths.get("./target/sample-storage");
+        createDirectory(storageDirectory);
+        config.setFrameworkStorage(storageDirectory);
+
+        embeddedOSGiContainer.setSystemPackages("com.indoqa.osgi.embedded.sample.interfaces");
         return embeddedOSGiContainer;
     }
 }
