@@ -66,6 +66,10 @@ public class EmbeddedOSGiContainer {
     private Collection<EmbeddedOSGiServiceProvider> embeddedOSGiServiceProviders = emptyList();
 
     public void addSystemPackage(String additionalPackage) {
+        if (additionalPackage == null || "".equals(additionalPackage)) {
+            throw new EmbeddedOSGiContainerInitializationException("An empty system package cannot be added.");
+        }
+
         if (this.systemPackages.length() > 0) {
             this.systemPackages.append(SYSTEM_PACKAGE_SEPARATOR);
         }
@@ -81,25 +85,32 @@ public class EmbeddedOSGiContainer {
 
     @PostConstruct
     public void initialize() {
+        this.createHostActivator();
         this.startFelix();
         this.initializeServiceProviders();
     }
 
     public void setContainerConfiguration(ContainerConfiguration containerConfiguration) {
+        Objects.nonNull(containerConfiguration);
         this.containerConfiguration = containerConfiguration;
     }
 
     public void setEmbeddedOSGiServiceProviders(Collection<EmbeddedOSGiServiceProvider> providers) {
+        Objects.nonNull(providers);
         this.embeddedOSGiServiceProviders = providers;
     }
 
     public void setSystemPackages(CharSequence systemPackages) {
+        if (systemPackages == null || "".equals(systemPackages)) {
+            throw new EmbeddedOSGiContainerInitializationException("An empty system package cannot be added.");
+        }
+
         this.systemPackages.append(systemPackages);
     }
 
     protected void configHostActivator(Map<String, Object> config) {
         List<BundleActivator> activators = new ArrayList<BundleActivator>();
-        activators.add(this.createHostActivator());
+        activators.add(this.hostActivator);
         config.put(SYSTEMBUNDLE_ACTIVATORS_PROP, activators);
     }
 
@@ -116,7 +127,7 @@ public class EmbeddedOSGiContainer {
         try {
             this.logger.info("Going to startup embedded OSGi container.");
 
-            this.felix = new Felix(this.configureFelixContainer());
+            this.felix = new Felix(this.createFelixContainerConfiguration());
             this.felix.start();
 
             int hashCode = System.identityHashCode(this.felix);
@@ -136,10 +147,7 @@ public class EmbeddedOSGiContainer {
 
             this.logger.info("Shutdown of an embedded OSGi container completed successfully: container-hashCode="
                 + System.identityHashCode(this.felix));
-        } catch (BundleException e) {
-            this.logger.error(
-                "Error while shuting down embedded OSGi container: container-hashCode=" + System.identityHashCode(this.felix), e);
-        } catch (InterruptedException e) {
+        } catch (BundleException | InterruptedException e) {
             this.logger.error(
                 "Error while shuting down embedded OSGi container: container-hashCode=" + System.identityHashCode(this.felix), e);
         }
@@ -149,7 +157,7 @@ public class EmbeddedOSGiContainer {
         this.containerConfiguration.apply(config);
     }
 
-    private Map<String, Object> configureFelixContainer() {
+    private Map<String, Object> createFelixContainerConfiguration() {
         Map<String, Object> config = new HashMap<String, Object>();
 
         this.configHostActivator(config);

@@ -33,9 +33,9 @@ import org.slf4j.LoggerFactory;
  * Load this bundle in order to start a basic set of bundles. This basic set contains:
  * <ul>
  * <li>the Felix FileInstall bundle</li>
+ * <li>the Felix Config Admin bundle</li>
  * <li>the Felix Gogo Shell bundle (including Gogo Command and Gogo Runtime)</li>
  * <li>the Felix Remote Shell bundle</li>
- * <li>the Felix Config Admin bundle</li>
  * </ul>
  */
 /* default */ class HostActivator implements BundleActivator {

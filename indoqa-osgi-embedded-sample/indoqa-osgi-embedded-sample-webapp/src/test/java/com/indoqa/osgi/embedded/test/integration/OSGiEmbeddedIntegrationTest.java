@@ -50,8 +50,8 @@ public class OSGiEmbeddedIntegrationTest {
 
     @Before
     public void initializeEmbeddedOSGiContainer() throws IOException {
-        Path bundlesDirectory = this.initializeBundlesDirectory();
-        Path storageDirectory = this.initializeStorageDirectory();
+        Path bundlesDirectory = this.prepareDirectory(DIR_BUNDLES);
+        Path storageDirectory = this.prepareDirectory(DIR_STORAGE);
         ContainerConfiguration config = new ContainerConfiguration().setFrameworkStorage(storageDirectory)
             .setFileInstallDir(bundlesDirectory)
             .setFileInstallNoInitialDelay(true)
@@ -88,13 +88,6 @@ public class OSGiEmbeddedIntegrationTest {
         this.embeddedOSGiContainer.destroy();
     }
 
-    private Path initializeBundlesDirectory() throws IOException {
-        Path bundlesDirectory = Paths.get(DIR_BUNDLES);
-        Files.createDirectories(bundlesDirectory);
-        FileUtils.cleanDirectory(bundlesDirectory.toFile());
-        return bundlesDirectory;
-    }
-
     private Collection<EmbeddedOSGiServiceProvider> initializeProviders() {
         Collection<EmbeddedOSGiServiceProvider> providers = new ArrayList<>();
         this.dateServiceProvider = new DateServiceProvider();
@@ -102,11 +95,11 @@ public class OSGiEmbeddedIntegrationTest {
         return providers;
     }
 
-    private Path initializeStorageDirectory() throws IOException {
-        Path storageDirectory = Paths.get(DIR_STORAGE);
-        Files.createDirectories(storageDirectory);
-        FileUtils.cleanDirectory(storageDirectory.toFile());
-        return storageDirectory;
+    private Path prepareDirectory(String dir) throws IOException {
+        Path path = Paths.get(dir);
+        Files.createDirectories(path);
+        FileUtils.cleanDirectory(path.toFile());
+        return path;
     }
 
     private void sleep(int millis) {
