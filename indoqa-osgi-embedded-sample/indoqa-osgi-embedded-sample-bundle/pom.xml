@@ -46,22 +46,13 @@
       <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
-        <version>1.4.3</version>
+        <version>3.0.1</version>
         <extensions>true</extensions>
         <configuration>
           <instructions>
-            <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
-            <Bundle-Name>Custom DateService Implementation</Bundle-Name>
-            <Bundle-Vendor>Demo</Bundle-Vendor>
-            <Bundle-Description>
-              A bundle that implements a DateService
-            </Bundle-Description>
             <Bundle-Activator>
               com.indoqa.osgi.embedded.sample.Activator
             </Bundle-Activator>
-            <Private-Package>
-              com.indoqa.osgi.embedded.sample.*
-            </Private-Package>
           </instructions>
         </configuration>
       </plugin>
