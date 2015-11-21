@@ -41,8 +41,7 @@ public class SampleConfig {
 
         ContainerConfiguration config = new ContainerConfiguration().setFileInstallDir(bundlesDirectory)
             .setFrameworkStorage(storageDirectory)
-            .enableLocalShell()
-            .enableRemoteShell();
+            .setEnableRemoteShell(true);
         embeddedOSGiContainer.setContainerConfiguration(config);
 
         return embeddedOSGiContainer;

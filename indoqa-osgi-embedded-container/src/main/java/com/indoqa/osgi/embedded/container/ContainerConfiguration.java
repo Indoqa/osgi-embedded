@@ -71,13 +71,9 @@ public class ContainerConfiguration {
     private boolean remoteShellBundlesEnabled = false;
     private boolean localShellBundlesEnabled = false;
 
-    public ContainerConfiguration enableLocalShell() {
-        this.localShellBundlesEnabled = true;
-        return this;
-    }
-
-    public ContainerConfiguration enableRemoteShell() {
-        this.remoteShellBundlesEnabled = true;
+    public ContainerConfiguration setEnableRemoteShell(boolean enabled) {
+        this.remoteShellBundlesEnabled = enabled;
+        this.localShellBundlesEnabled = enabled;
         return this;
     }
 
