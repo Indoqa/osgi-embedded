@@ -47,12 +47,6 @@
       <artifactId>org.apache.felix.framework</artifactId>
     </dependency>
     
-    <!-- Dependency Injection -->
-    <dependency>
-      <groupId>javax.inject</groupId>
-      <artifactId>javax.inject</artifactId>
-    </dependency>
-
     <!-- Logging -->
     <dependency>
       <groupId>org.slf4j</groupId>

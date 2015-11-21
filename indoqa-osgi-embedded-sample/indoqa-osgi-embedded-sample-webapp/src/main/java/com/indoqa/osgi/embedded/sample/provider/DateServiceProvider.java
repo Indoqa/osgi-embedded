@@ -14,13 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.indoqa.osgi.embedded.sample.interfaces;
+package com.indoqa.osgi.embedded.sample.provider;
 
 import javax.inject.Named;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.util.tracker.ServiceTracker;
 
+import com.indoqa.osgi.embedded.sample.interfaces.DateService;
 import com.indoqa.osgi.embedded.services.EmbeddedOSGiServiceProvider;
 
 @Named

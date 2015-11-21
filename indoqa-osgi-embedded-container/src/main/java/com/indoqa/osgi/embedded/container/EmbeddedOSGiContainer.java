@@ -24,7 +24,6 @@ import java.util.*;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-import javax.inject.Inject;
 
 import org.apache.felix.framework.Felix;
 import org.osgi.framework.Bundle;
@@ -62,7 +61,6 @@ public class EmbeddedOSGiContainer {
     private HostActivator hostActivator;
     private Felix felix;
 
-    @Inject
     private Collection<EmbeddedOSGiServiceProvider> embeddedOSGiServiceProviders = emptyList();
 
     public void addSystemPackage(String additionalPackage) {

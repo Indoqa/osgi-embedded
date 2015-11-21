@@ -29,7 +29,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.context.ApplicationContext;
 
 import com.indoqa.osgi.embedded.sample.interfaces.DateService;
-import com.indoqa.osgi.embedded.sample.interfaces.DateServiceProvider;
+import com.indoqa.osgi.embedded.sample.provider.DateServiceProvider;
 
 @WebServlet(urlPatterns = "/")
 public class SampleServlet extends HttpServlet {

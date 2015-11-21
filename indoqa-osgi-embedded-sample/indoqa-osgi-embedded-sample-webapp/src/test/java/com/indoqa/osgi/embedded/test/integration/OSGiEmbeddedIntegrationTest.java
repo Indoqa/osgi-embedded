@@ -34,7 +34,7 @@ import org.junit.Test;
 import com.indoqa.osgi.embedded.container.ContainerConfiguration;
 import com.indoqa.osgi.embedded.container.EmbeddedOSGiContainer;
 import com.indoqa.osgi.embedded.sample.interfaces.DateService;
-import com.indoqa.osgi.embedded.sample.interfaces.DateServiceProvider;
+import com.indoqa.osgi.embedded.sample.provider.DateServiceProvider;
 import com.indoqa.osgi.embedded.services.EmbeddedOSGiServiceProvider;
 
 public class OSGiEmbeddedIntegrationTest {

@@ -32,17 +32,4 @@
   <name>Indoqa OSGi Embedded Sample Interface</name>
   <description>A module that provides an interface that can be extended by a bundle.</description>
 
-  <dependencies>
-    <dependency>
-      <groupId>javax.inject</groupId>
-      <artifactId>javax.inject</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>com.indoqa.osgi</groupId>
-      <artifactId>indoqa-osgi-embedded-services</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-  </dependencies>
-
 </project>
