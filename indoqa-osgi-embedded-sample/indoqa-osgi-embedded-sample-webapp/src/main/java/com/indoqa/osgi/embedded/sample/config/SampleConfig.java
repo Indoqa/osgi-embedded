@@ -20,6 +20,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Collection;
+
+import javax.inject.Inject;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,9 +30,13 @@ import org.springframework.context.annotation.Configuration;
 import com.indoqa.osgi.embedded.container.ContainerConfiguration;
 import com.indoqa.osgi.embedded.container.EmbeddedOSGiContainer;
 import com.indoqa.osgi.embedded.container.EmbeddedOSGiContainerInitializationException;
+import com.indoqa.osgi.embedded.services.EmbeddedOSGiServiceProvider;
 
 @Configuration
 public class SampleConfig {
+
+    @Inject
+    private Collection<EmbeddedOSGiServiceProvider> serviceProviders;
 
     @Bean
     public EmbeddedOSGiContainer createEmbeddedOSGiContainer() {
@@ -43,6 +50,8 @@ public class SampleConfig {
             .setFrameworkStorage(storageDirectory)
             .setEnableRemoteShell(true);
         embeddedOSGiContainer.setContainerConfiguration(config);
+
+        embeddedOSGiContainer.setEmbeddedOSGiServiceProviders(this.serviceProviders);
 
         return embeddedOSGiContainer;
     }
