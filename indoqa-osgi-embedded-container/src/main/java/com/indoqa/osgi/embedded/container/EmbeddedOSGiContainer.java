@@ -166,8 +166,8 @@ public class EmbeddedOSGiContainer {
     }
 
     private BundleActivator createHostActivator() {
-        this.hostActivator = new HostActivator(this.containerConfiguration.areLocalShellBundlesEnabled(),
-            this.containerConfiguration.areRemoteShellBundlesEnabled());
+        this.hostActivator = new HostActivator(this.containerConfiguration.areRemoteShellBundlesEnabled(),
+            this.containerConfiguration.isSlf4jBridgingActivated());
         return this.hostActivator;
     }
 

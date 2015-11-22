@@ -69,11 +69,10 @@ public class ContainerConfiguration {
     private String remoteShellPort = DEFAULT_REMOTE_SHELL_PORT;
 
     private boolean remoteShellBundlesEnabled = false;
-    private boolean localShellBundlesEnabled = false;
+    private boolean slf4jBridgingActivated = false;
 
     public ContainerConfiguration setEnableRemoteShell(boolean enabled) {
         this.remoteShellBundlesEnabled = enabled;
-        this.localShellBundlesEnabled = enabled;
         return this;
     }
 
@@ -157,6 +156,11 @@ public class ContainerConfiguration {
         return this;
     }
 
+    public ContainerConfiguration setSlf4jBridgingActivated(boolean activated) {
+        this.slf4jBridgingActivated = activated;
+        return this;
+    }
+
     protected void apply(Map<String, Object> config) {
         this.applyProperty(config, PROPERTY_FILEINSTALL_POLL, this.fileInstallPoll);
         this.applyProperty(config, PROPERTY_FILEINSTALL_LOG_LEVEL, this.fileInstallLogLevel);
@@ -184,12 +188,12 @@ public class ContainerConfiguration {
         }
     }
 
-    protected boolean areLocalShellBundlesEnabled() {
-        return this.localShellBundlesEnabled;
-    }
-
     protected boolean areRemoteShellBundlesEnabled() {
         return this.remoteShellBundlesEnabled;
+    }
+
+    protected boolean isSlf4jBridgingActivated() {
+        return this.slf4jBridgingActivated;
     }
 
     private void applyProperty(Map<String, Object> config, String name, Object value) {

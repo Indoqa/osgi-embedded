@@ -41,11 +41,16 @@
       <artifactId>indoqa-osgi-embedded-services</artifactId>
     </dependency>
     
-    <!-- Felix -->
+    <!-- OSGi/Felix -->
     <dependency>
       <groupId>org.apache.felix</groupId>
       <artifactId>org.apache.felix.framework</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.osgi</groupId>
+      <artifactId>org.osgi.compendium</artifactId>
+      <scope>provided</scope><!-- provided by the Felix Log Bundle at runtime -->
+    </dependency>       
     
     <!-- Logging -->
     <dependency>

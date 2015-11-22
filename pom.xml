@@ -35,9 +35,10 @@
     <project.build.compiler.version>1.8</project.build.compiler.version>  
     <felix-version>5.4.0</felix-version>
     <inject-version>1</inject-version>
-    <slf4j-version>1.7.7</slf4j-version>
+    <slf4j-version>1.7.13</slf4j-version>
     <junit-version>4.12</junit-version>
-    <osgi-version>6.0.0</osgi-version>
+    <osgi-core-version>6.0.0</osgi-core-version>
+    <osgi-compendium-version>5.0.0</osgi-compendium-version>
   </properties>
   
   <modules>
@@ -74,8 +75,13 @@
       <dependency>
         <groupId>org.osgi</groupId>
         <artifactId>org.osgi.core</artifactId>
-        <version>${osgi-version}</version>
+        <version>${osgi-core-version}</version>
       </dependency>
+      <dependency>
+        <groupId>org.osgi</groupId>
+        <artifactId>org.osgi.compendium</artifactId>
+        <version>${osgi-compendium-version}</version>
+      </dependency>      
       <dependency>
         <groupId>org.apache.felix</groupId>
         <artifactId>org.apache.felix.framework</artifactId>
@@ -86,6 +92,11 @@
       <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-api</artifactId>
+        <version>${slf4j-version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>osgi-over-slf4j</artifactId>
         <version>${slf4j-version}</version>
       </dependency>
 

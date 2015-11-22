@@ -32,10 +32,11 @@ import org.slf4j.LoggerFactory;
 /**
  * Load this bundle in order to start a basic set of bundles. This basic set contains:
  * <ul>
- * <li>the Felix FileInstall bundle</li>
- * <li>the Felix Config Admin bundle</li>
- * <li>the Felix Gogo Shell bundle (including Gogo Command and Gogo Runtime)</li>
- * <li>the Felix Remote Shell bundle</li>
+ * <li>Felix Log</li>
+ * <li>Felix Config Admin</li>
+ * <li>Felix FileInstall</li>
+ * <li>Felix Gogo Shell (including Gogo Command and Gogo Runtime)</li>
+ * <li>Felix Remote Shell</li>
  * </ul>
  */
 /* default */ class HostActivator implements BundleActivator {
@@ -45,8 +46,9 @@ import org.slf4j.LoggerFactory;
     private static final Map<String, BundleType> BUNDLES = new ConcurrentHashMap<>();
 
     static {
-        BUNDLES.put("org.apache.felix.fileinstall-3.5.0.jar", BundleType.MANDATORY_BUNDLE);
+        BUNDLES.put("org.apache.felix.log-1.0.1.jar", BundleType.MANDATORY_BUNDLE);
         BUNDLES.put("org.apache.felix.configadmin-1.8.8.jar", BundleType.MANDATORY_BUNDLE);
+        BUNDLES.put("org.apache.felix.fileinstall-3.5.0.jar", BundleType.MANDATORY_BUNDLE);
 
         BUNDLES.put("org.apache.felix.gogo.command-0.16.0.jar", BundleType.REMOTE_SHELL_BUNDLE);
         BUNDLES.put("org.apache.felix.gogo.runtime-0.16.2.jar", BundleType.REMOTE_SHELL_BUNDLE);
@@ -57,14 +59,13 @@ import org.slf4j.LoggerFactory;
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private final boolean localShellEnabled;
     private final boolean remoteShellEnabled;
-
+    private final boolean slf4jBridgingActivated;
     private BundleContext bundleContext;
 
-    public HostActivator(boolean localShellEnabled, boolean remoteShellEnabled) {
-        this.localShellEnabled = localShellEnabled;
+    public HostActivator(boolean remoteShellEnabled, boolean slf4jBridgingActivated) {
         this.remoteShellEnabled = remoteShellEnabled;
+        this.slf4jBridgingActivated = slf4jBridgingActivated;
     }
 
     public BundleContext getBundleContext() {
@@ -85,11 +86,8 @@ import org.slf4j.LoggerFactory;
 
         this.startBundlesByType(BundleType.MANDATORY_BUNDLE);
 
-        if (this.localShellEnabled) {
-            this.startBundlesByType(BundleType.LOCAL_SHELL_BUNDLE);
-        }
-
         if (this.remoteShellEnabled) {
+            this.startBundlesByType(BundleType.LOCAL_SHELL_BUNDLE);
             this.startBundlesByType(BundleType.REMOTE_SHELL_BUNDLE);
         }
     }

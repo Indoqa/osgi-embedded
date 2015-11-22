@@ -22,6 +22,7 @@
   </appender>
   
   <logger name="com.indoqa.osgi" level="INFO" />
+  <logger name="org.apache.felix" level="INFO" />
 
   <root level="ERROR">
     <appender-ref ref="STDOUT" />
