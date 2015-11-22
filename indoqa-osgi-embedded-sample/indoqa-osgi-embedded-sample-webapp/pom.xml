@@ -64,13 +64,11 @@
     </dependency>
     
     <!-- Inject -->
-    <!-- Dependency Injection -->
     <dependency>
       <groupId>javax.inject</groupId>
       <artifactId>javax.inject</artifactId>
       <version>${inject-version}</version>
     </dependency>
-    
 
     <!-- Spring Dependencies -->
     <dependency>
