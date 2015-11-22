@@ -33,7 +33,7 @@
   <description>A module that contains a web application that runs an embedded OSGi container and deploys an extension bundle</description>
 
   <properties>
-    <spring.version>4.2.0.RELEASE</spring.version>
+    <spring.version>4.2.3.RELEASE</spring.version>
     <servlet-api-version>3.1.0</servlet-api-version>
     <slf4j-version>1.7.7</slf4j-version>
     <logback-classic-version>1.1.3</logback-classic-version>
