@@ -46,8 +46,8 @@ import org.slf4j.LoggerFactory;
     private static final Map<String, BundleType> BUNDLES = new ConcurrentHashMap<>();
 
     static {
-        BUNDLES.put("org.apache.felix.log-1.0.1.jar", BundleType.MANDATORY_BUNDLE);
         BUNDLES.put("org.apache.felix.configadmin-1.8.8.jar", BundleType.MANDATORY_BUNDLE);
+        BUNDLES.put("org.apache.felix.log-1.0.1.jar", BundleType.MANDATORY_BUNDLE);
         BUNDLES.put("org.apache.felix.fileinstall-3.5.0.jar", BundleType.MANDATORY_BUNDLE);
 
         BUNDLES.put("org.apache.felix.gogo.command-0.16.0.jar", BundleType.REMOTE_SHELL_BUNDLE);
@@ -55,6 +55,8 @@ import org.slf4j.LoggerFactory;
         BUNDLES.put("org.apache.felix.gogo.shell-0.12.0.jar", BundleType.REMOTE_SHELL_BUNDLE);
 
         BUNDLES.put("org.apache.felix.shell.remote-1.1.2.jar", BundleType.LOCAL_SHELL_BUNDLE);
+
+        BUNDLES.put("com.indoqa.osgi.slf4j.bridge-1.0.0.SNAPSHOT.jar", BundleType.SLF4J_BRIDGE);
     }
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -83,13 +85,7 @@ import org.slf4j.LoggerFactory;
     @Override
     public void start(BundleContext context) {
         this.bundleContext = context;
-
-        this.startBundlesByType(BundleType.MANDATORY_BUNDLE);
-
-        if (this.remoteShellEnabled) {
-            this.startBundlesByType(BundleType.LOCAL_SHELL_BUNDLE);
-            this.startBundlesByType(BundleType.REMOTE_SHELL_BUNDLE);
-        }
+        this.startBundles();
     }
 
     @Override
@@ -116,12 +112,26 @@ import org.slf4j.LoggerFactory;
             Bundle bundle = this.bundleContext.installBundle(bundleFileName, bundleInputStream);
             bundle.start();
         } catch (BundleException e) {
-            throw new EmbeddedOSGiContainerInitializationException("Can't initialize bundle '" + resourceName + "'.", e);
+            String msg = "Can't initialize bundle '" + resourceName + "'.";
+            this.logger.error(msg, e);
+            throw new EmbeddedOSGiContainerInitializationException(msg, e);
         } finally {
             this.closeBundleInputStream(resourceName, bundleInputStream);
         }
 
         this.logger.info("Started bundle: " + bundleFileName);
+    }
+
+    private void startBundles() {
+        if (this.slf4jBridgingActivated) {
+            this.startBundlesByType(BundleType.SLF4J_BRIDGE);
+        }
+        this.startBundlesByType(BundleType.MANDATORY_BUNDLE);
+
+        if (this.remoteShellEnabled) {
+            this.startBundlesByType(BundleType.LOCAL_SHELL_BUNDLE);
+            this.startBundlesByType(BundleType.REMOTE_SHELL_BUNDLE);
+        }
     }
 
     private void startBundlesByType(BundleType type) {
@@ -134,6 +144,6 @@ import org.slf4j.LoggerFactory;
 
     private enum BundleType {
 
-        MANDATORY_BUNDLE, REMOTE_SHELL_BUNDLE, LOCAL_SHELL_BUNDLE
+        MANDATORY_BUNDLE, SLF4J_BRIDGE, REMOTE_SHELL_BUNDLE, LOCAL_SHELL_BUNDLE
     }
 }

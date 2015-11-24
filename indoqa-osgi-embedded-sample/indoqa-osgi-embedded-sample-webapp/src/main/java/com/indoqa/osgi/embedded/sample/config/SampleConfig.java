@@ -42,11 +42,6 @@ public class SampleConfig {
     public EmbeddedOSGiContainer createEmbeddedOSGiContainer() {
         EmbeddedOSGiContainer container = new EmbeddedOSGiContainer();
 
-        // Register SLF4J
-        container.addSystemPackage("org.slf4j;version=1.7.12");
-        container.addSystemPackage("org.slf4j.spi;version=1.7.12");
-        container.addSystemPackage("org.slf4j.helpers;version=1.7.12");
-
         // Register the sample interface
         container.addSystemPackage("com.indoqa.osgi.embedded.sample.interfaces");
 
@@ -55,7 +50,8 @@ public class SampleConfig {
 
         ContainerConfiguration config = new ContainerConfiguration().setFileInstallDir(bundlesDirectory)
             .setFrameworkStorage(storageDirectory)
-            .setEnableRemoteShell(true);
+            .setEnableRemoteShell(true)
+            .setSlf4jBridgeActivated(true);
         container.setContainerConfiguration(config);
 
         container.setEmbeddedOSGiServiceProviders(this.serviceProviders);

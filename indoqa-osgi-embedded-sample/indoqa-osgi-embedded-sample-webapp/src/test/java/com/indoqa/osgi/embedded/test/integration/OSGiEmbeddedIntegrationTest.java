@@ -53,6 +53,7 @@ public class OSGiEmbeddedIntegrationTest {
         Path bundlesDirectory = this.prepareDirectory(DIR_BUNDLES);
         Path storageDirectory = this.prepareDirectory(DIR_STORAGE);
         ContainerConfiguration config = new ContainerConfiguration().setFrameworkStorage(storageDirectory)
+            .setSlf4jBridgeActivated(true)
             .setFileInstallDir(bundlesDirectory)
             .setFileInstallNoInitialDelay(true)
             .setFileInstallPollIntervall(250);

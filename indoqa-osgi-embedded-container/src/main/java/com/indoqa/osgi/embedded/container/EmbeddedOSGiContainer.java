@@ -56,10 +56,10 @@ public class EmbeddedOSGiContainer {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private ContainerConfiguration containerConfiguration = new ContainerConfiguration();
-    private StringBuilder systemPackages = new StringBuilder();
-    private HostActivator hostActivator;
     private Felix felix;
+    private ContainerConfiguration containerConfiguration = new ContainerConfiguration();
+    private HostActivator hostActivator;
+    private StringBuilder systemPackages = new StringBuilder();
 
     private Collection<EmbeddedOSGiServiceProvider> embeddedOSGiServiceProviders = emptyList();
 
@@ -84,6 +84,7 @@ public class EmbeddedOSGiContainer {
     @PostConstruct
     public void initialize() {
         this.createHostActivator();
+        this.exportSlf4jPackages();
         this.startFelix();
         this.initializeServiceProviders();
     }
@@ -96,14 +97,6 @@ public class EmbeddedOSGiContainer {
     public void setEmbeddedOSGiServiceProviders(Collection<EmbeddedOSGiServiceProvider> providers) {
         Objects.nonNull(providers);
         this.embeddedOSGiServiceProviders = providers;
-    }
-
-    public void setSystemPackages(CharSequence systemPackages) {
-        if (systemPackages == null || "".equals(systemPackages)) {
-            throw new EmbeddedOSGiContainerInitializationException("An empty system package cannot be added.");
-        }
-
-        this.systemPackages.append(systemPackages);
     }
 
     protected void configHostActivator(Map<String, Object> config) {
@@ -167,7 +160,7 @@ public class EmbeddedOSGiContainer {
 
     private BundleActivator createHostActivator() {
         this.hostActivator = new HostActivator(this.containerConfiguration.areRemoteShellBundlesEnabled(),
-            this.containerConfiguration.isSlf4jBridgingActivated());
+            this.containerConfiguration.isSlf4jBridgeActivated());
         return this.hostActivator;
     }
 
@@ -179,6 +172,15 @@ public class EmbeddedOSGiContainer {
 
             this.logger.info("Destroyed service provider: " + serviceProvider.getClass().getName() + "; service-provider-hashCode="
                 + System.identityHashCode(serviceProvider));
+        }
+    }
+
+    private void exportSlf4jPackages() {
+        if (this.containerConfiguration.isSlf4jBridgeActivated()) {
+            this.addSystemPackage("org.osgi.service.log");
+            this.addSystemPackage("org.slf4j;version=1.7.12");
+            this.addSystemPackage("org.slf4j.spi;version=1.7.12");
+            this.addSystemPackage("org.slf4j.helpers;version=1.7.12");
         }
     }
 
