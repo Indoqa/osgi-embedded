@@ -81,6 +81,10 @@ public class EmbeddedOSGiContainer {
         this.stopFelix();
     }
 
+    public Collection<Bundle> getInstalledBundles() {
+        return Arrays.asList(this.hostActivator.getBundles());
+    }
+
     @PostConstruct
     public void initialize() {
         this.createHostActivator();
@@ -108,10 +112,6 @@ public class EmbeddedOSGiContainer {
     protected void configSystemExtraClasspath(Map<String, Object> config) {
         config.put(FRAMEWORK_SYSTEMPACKAGES_EXTRA, this.systemPackages.toString());
         this.logger.info("Setting property '" + FRAMEWORK_SYSTEMPACKAGES_EXTRA + "': " + this.systemPackages);
-    }
-
-    protected Bundle[] getInstalledBundles() {
-        return this.hostActivator.getBundles();
     }
 
     protected void startFelix() {
