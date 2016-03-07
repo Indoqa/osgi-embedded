@@ -136,8 +136,9 @@ public class EmbeddedOSGiContainer {
             this.felix.stop();
             this.felix.waitForStop(0);
 
-            this.logger.info("Shutdown of an embedded OSGi container completed successfully: container-hashCode="
-                + System.identityHashCode(this.felix));
+            this.logger.info(
+                "Shutdown of an embedded OSGi container completed successfully: container-hashCode="
+                    + System.identityHashCode(this.felix));
         } catch (BundleException | InterruptedException e) {
             this.logger.error(
                 "Error while shuting down embedded OSGi container: container-hashCode=" + System.identityHashCode(this.felix), e);
@@ -159,8 +160,8 @@ public class EmbeddedOSGiContainer {
     }
 
     private BundleActivator createHostActivator() {
-        this.hostActivator = new HostActivator(this.containerConfiguration.areRemoteShellBundlesEnabled(),
-            this.containerConfiguration.isSlf4jBridgeActivated());
+        this.hostActivator = new HostActivator(
+            this.containerConfiguration.areRemoteShellBundlesEnabled(), this.containerConfiguration.isSlf4jBridgeActivated());
         return this.hostActivator;
     }
 
@@ -170,8 +171,9 @@ public class EmbeddedOSGiContainer {
         for (EmbeddedOSGiServiceProvider serviceProvider : this.embeddedOSGiServiceProviders) {
             serviceProvider.destroy();
 
-            this.logger.info("Destroyed service provider: " + serviceProvider.getClass().getName() + "; service-provider-hashCode="
-                + System.identityHashCode(serviceProvider));
+            this.logger.info(
+                "Destroyed service provider: " + serviceProvider.getClass().getName() + "; service-provider-hashCode="
+                    + System.identityHashCode(serviceProvider));
         }
     }
 
@@ -190,8 +192,9 @@ public class EmbeddedOSGiContainer {
         for (EmbeddedOSGiServiceProvider serviceProvider : this.embeddedOSGiServiceProviders) {
             serviceProvider.initialize(this.hostActivator.getBundleContext());
 
-            this.logger.info("Initialized service provider: " + serviceProvider.getClass().getName() + "; service-provider-hashCode="
-                + System.identityHashCode(serviceProvider));
+            this.logger.info(
+                "Initialized service provider: " + serviceProvider.getClass().getName() + "; service-provider-hashCode="
+                    + System.identityHashCode(serviceProvider));
         }
     }
 }

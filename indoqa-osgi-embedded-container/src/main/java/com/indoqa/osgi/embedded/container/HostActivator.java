@@ -46,8 +46,10 @@ import org.slf4j.LoggerFactory;
     private static final Map<String, BundleType> BUNDLES = new ConcurrentHashMap<>();
 
     static {
-        BUNDLES.put("org.apache.felix.configadmin-1.8.8.jar", BundleType.MANDATORY_BUNDLE);
         BUNDLES.put("org.apache.felix.log-1.0.1.jar", BundleType.MANDATORY_BUNDLE);
+        BUNDLES.put("com.indoqa.osgi.slf4j.bridge-1.0.0.SNAPSHOT.jar", BundleType.SLF4J_BRIDGE);
+
+        BUNDLES.put("org.apache.felix.configadmin-1.8.8.jar", BundleType.MANDATORY_BUNDLE);
         BUNDLES.put("org.apache.felix.fileinstall-3.5.0.jar", BundleType.MANDATORY_BUNDLE);
 
         BUNDLES.put("org.apache.felix.gogo.command-0.16.0.jar", BundleType.REMOTE_SHELL_BUNDLE);
@@ -55,8 +57,6 @@ import org.slf4j.LoggerFactory;
         BUNDLES.put("org.apache.felix.gogo.shell-0.12.0.jar", BundleType.REMOTE_SHELL_BUNDLE);
 
         BUNDLES.put("org.apache.felix.shell.remote-1.1.2.jar", BundleType.LOCAL_SHELL_BUNDLE);
-
-        BUNDLES.put("com.indoqa.osgi.slf4j.bridge-1.0.0.SNAPSHOT.jar", BundleType.SLF4J_BRIDGE);
     }
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());

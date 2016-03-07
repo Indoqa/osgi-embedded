@@ -41,6 +41,7 @@ public class ContainerConfiguration {
     private static final String PROPERTY_FILEINSTALL_ACTIVE_LEVEL = "felix.fileinstall.active.level";
     private static final String PROPERTY_FILEINSTALL_ENABLE_CONFIG_SAVE = "felix.fileinstall.enableConfigSave";
     private static final String PROPERTY_FILEINSTALL_UPDATE_WITH_LISTENERS = "felix.fileinstall.bundles.updateWithListeners";
+    private static final int DEFAULT_FILEINSTALL_LOG_LEVEL = 2;
 
     private static final String PROPERTY_OSGI_STORAGE_DIR = "org.osgi.framework.storage";
     private static final String PROPERTY_OSGI_STORAGE_CLEAN = "org.osgi.framework.storage.clean";
@@ -51,7 +52,7 @@ public class ContainerConfiguration {
 
     private Integer fileInstallPoll;
     private Path fileInstallDir;
-    private Integer fileInstallLogLevel;
+    private Integer fileInstallLogLevel = DEFAULT_FILEINSTALL_LOG_LEVEL;
     private Boolean fileInstallNewStart;
     private String fileInstallFilter;
     private Path fileInstallTmpDir;
