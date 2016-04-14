@@ -19,7 +19,9 @@ package com.indoqa.osgi.embedded.container;
 import static com.indoqa.osgi.embedded.container.DirectoryValidator.checkDirectory;
 
 import java.nio.file.Path;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,7 +53,7 @@ public class ContainerConfiguration {
     private static final String DEFAULT_REMOTE_SHELL_PORT = "6666";
 
     private Integer fileInstallPoll;
-    private Path fileInstallDir;
+    private Set<Path> fileInstallDirs = new HashSet<>();
     private Integer fileInstallLogLevel = DEFAULT_FILEINSTALL_LOG_LEVEL;
     private Boolean fileInstallNewStart;
     private String fileInstallFilter;
@@ -72,6 +74,11 @@ public class ContainerConfiguration {
     private boolean remoteShellBundlesEnabled = false;
     private boolean slf4jBridgeActivated = false;
 
+    public ContainerConfiguration addFileInstallDir(Path dir) {
+        this.fileInstallDirs.add(dir);
+        return this;
+    }
+
     public ContainerConfiguration setEnableRemoteShell(boolean enabled) {
         this.remoteShellBundlesEnabled = enabled;
         return this;
@@ -79,11 +86,6 @@ public class ContainerConfiguration {
 
     public ContainerConfiguration setFileInstallActiveLevel(Integer activeLevel) {
         this.fileInstallActiveLevel = activeLevel;
-        return this;
-    }
-
-    public ContainerConfiguration setFileInstallDir(Path dir) {
-        this.fileInstallDir = dir;
         return this;
     }
 
@@ -176,8 +178,7 @@ public class ContainerConfiguration {
         this.applyProperty(config, PROPERTY_FILEINSTALL_ENABLE_CONFIG_SAVE, this.fileInstallEnableConfigSave);
         this.applyProperty(config, PROPERTY_FILEINSTALL_UPDATE_WITH_LISTENERS, this.fileInstallUpdateWithListeners);
 
-        checkDirectory(this.fileInstallDir, PROPERTY_FILEINSTALL_DIR);
-        this.applyProperty(config, PROPERTY_FILEINSTALL_DIR, this.fileInstallDir.toAbsolutePath().toString());
+        this.applyFileInstallDirProperty(config);
 
         checkDirectory(this.frameworkStorage, PROPERTY_OSGI_STORAGE_DIR);
         this.applyProperty(config, PROPERTY_OSGI_STORAGE_DIR, this.frameworkStorage.toAbsolutePath().toString());
@@ -187,6 +188,22 @@ public class ContainerConfiguration {
         if (this.areRemoteShellBundlesEnabled()) {
             this.applyProperty(config, PROPERTY_REMOTE_SHELL_PORT, this.remoteShellPort);
         }
+    }
+
+    protected void applyFileInstallDirProperty(Map<String, Object> config) {
+        if (this.fileInstallDirs.isEmpty()) {
+            throw new EmbeddedOSGiContainerInitializationException(
+                "The '" + PROPERTY_FILEINSTALL_DIR + "' directory is not set or empty");
+        }
+
+        StringBuilder absoluteFileInstallDirs = new StringBuilder();
+        for (Path fileInstallDir : this.fileInstallDirs) {
+            absoluteFileInstallDirs.append(fileInstallDir.toAbsolutePath().toString());
+            checkDirectory(fileInstallDir, PROPERTY_FILEINSTALL_DIR);
+            absoluteFileInstallDirs.append(",");
+        }
+
+        this.applyProperty(config, PROPERTY_FILEINSTALL_DIR, absoluteFileInstallDirs.toString());
     }
 
     protected boolean areRemoteShellBundlesEnabled() {

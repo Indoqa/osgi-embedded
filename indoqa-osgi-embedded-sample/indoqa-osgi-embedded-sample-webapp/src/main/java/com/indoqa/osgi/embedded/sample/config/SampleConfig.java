@@ -48,7 +48,8 @@ public class SampleConfig {
         Path bundlesDirectory = this.initializeDirectory(Paths.get("./target/sample-bundles"));
         Path storageDirectory = this.initializeDirectory(Paths.get("./target/sample-storage"));
 
-        ContainerConfiguration config = new ContainerConfiguration().setFileInstallDir(bundlesDirectory)
+        ContainerConfiguration config = new ContainerConfiguration()
+            .addFileInstallDir(bundlesDirectory)
             .setFrameworkStorage(storageDirectory)
             .setEnableRemoteShell(true)
             .setSlf4jBridgeActivated(true);
@@ -63,8 +64,8 @@ public class SampleConfig {
         try {
             Files.createDirectories(dir);
         } catch (IOException e) {
-            throw new EmbeddedOSGiContainerInitializationException("Error while creating directory '" + dir.toAbsolutePath() + "'.",
-                e);
+            throw new EmbeddedOSGiContainerInitializationException(
+                "Error while creating directory '" + dir.toAbsolutePath() + "'.", e);
         }
         return dir;
     }

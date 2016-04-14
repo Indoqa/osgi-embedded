@@ -20,6 +20,7 @@ import static java.util.Collections.emptyList;
 import static org.apache.felix.framework.util.FelixConstants.SYSTEMBUNDLE_ACTIVATORS_PROP;
 import static org.osgi.framework.Constants.FRAMEWORK_SYSTEMPACKAGES_EXTRA;
 
+import java.io.InputStream;
 import java.util.*;
 
 import javax.annotation.PostConstruct;
@@ -101,6 +102,10 @@ public class EmbeddedOSGiContainer {
     public void setEmbeddedOSGiServiceProviders(Collection<EmbeddedOSGiServiceProvider> providers) {
         Objects.nonNull(providers);
         this.embeddedOSGiServiceProviders = providers;
+    }
+
+    public Bundle startBundle(String location, InputStream bundleInputStream) {
+        return this.hostActivator.startBundle(location, bundleInputStream);
     }
 
     protected void configHostActivator(Map<String, Object> config) {

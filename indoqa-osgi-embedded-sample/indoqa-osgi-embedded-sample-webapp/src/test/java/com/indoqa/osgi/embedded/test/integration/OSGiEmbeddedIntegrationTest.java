@@ -52,9 +52,10 @@ public class OSGiEmbeddedIntegrationTest {
     public void initializeEmbeddedOSGiContainer() throws IOException {
         Path bundlesDirectory = this.prepareDirectory(DIR_BUNDLES);
         Path storageDirectory = this.prepareDirectory(DIR_STORAGE);
-        ContainerConfiguration config = new ContainerConfiguration().setFrameworkStorage(storageDirectory)
+        ContainerConfiguration config = new ContainerConfiguration()
+            .setFrameworkStorage(storageDirectory)
             .setSlf4jBridgeActivated(true)
-            .setFileInstallDir(bundlesDirectory)
+            .addFileInstallDir(bundlesDirectory)
             .setFileInstallNoInitialDelay(true)
             .setFileInstallPollIntervall(250);
         Collection<EmbeddedOSGiServiceProvider> providers = this.initializeProviders();

@@ -93,7 +93,22 @@ import org.slf4j.LoggerFactory;
         this.bundleContext = null;
     }
 
-    protected void closeBundleInputStream(String resourceName, InputStream bundleInputStream) {
+    protected Bundle startBundle(String location, InputStream bundleInputStream) {
+        try {
+            Bundle bundle = this.bundleContext.installBundle(location, bundleInputStream);
+            bundle.start();
+            this.logger.info("Started bundle: " + location);
+            return bundle;
+        } catch (BundleException e) {
+            String msg = "Can't initialize bundle '" + location + "'.";
+            this.logger.error(msg, e);
+            throw new EmbeddedOSGiContainerInitializationException(msg, e);
+        } finally {
+            this.closeBundleInputStream(location, bundleInputStream);
+        }
+    }
+
+    private void closeBundleInputStream(String resourceName, InputStream bundleInputStream) {
         if (bundleInputStream == null) {
             return;
         }
@@ -108,18 +123,8 @@ import org.slf4j.LoggerFactory;
     private void startBundle(String bundleFileName) {
         String resourceName = INITIAL_BUNDLES_FOLDER + bundleFileName;
         InputStream bundleInputStream = this.getClass().getClassLoader().getResourceAsStream(resourceName);
-        try {
-            Bundle bundle = this.bundleContext.installBundle(bundleFileName, bundleInputStream);
-            bundle.start();
-        } catch (BundleException e) {
-            String msg = "Can't initialize bundle '" + resourceName + "'.";
-            this.logger.error(msg, e);
-            throw new EmbeddedOSGiContainerInitializationException(msg, e);
-        } finally {
-            this.closeBundleInputStream(resourceName, bundleInputStream);
-        }
 
-        this.logger.info("Started bundle: " + bundleFileName);
+        this.startBundle(resourceName, bundleInputStream);
     }
 
     private void startBundles() {
