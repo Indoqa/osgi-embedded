@@ -20,6 +20,7 @@ public class EmbeddedOSGiContainerInitializationException extends RuntimeExcepti
 
     private static final long serialVersionUID = 1L;
 
+    @SuppressWarnings("WeakerAccess")
     public EmbeddedOSGiContainerInitializationException(String message) {
         super(message);
     }

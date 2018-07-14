@@ -47,22 +47,25 @@ import com.indoqa.osgi.embedded.services.EmbeddedOSGiServiceProvider;
  * <p/>
  * This implementation allows setting following properties:
  * <ul>
- * <li>@see {@link #setSystemPackages(String)} - all packages that are exported to the plugins</li>
+ * <li>@see {@link #addSystemPackage(String)} - all packages that are exported to the plugins</li>
  * <li>@see {@link ContainerConfiguration} for the possible configuration options of the pre-installed bundles</li>
  * </ul>
  */
+@SuppressWarnings({"unused", "WeakerAccess"})
 public class EmbeddedOSGiContainer {
 
     private static final String SYSTEM_PACKAGE_SEPARATOR = ",";
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
+    private final StringBuilder systemPackages = new StringBuilder();
     private Felix felix;
     private ContainerConfiguration containerConfiguration = new ContainerConfiguration();
     private HostActivator hostActivator;
-    private StringBuilder systemPackages = new StringBuilder();
+    private Collection<EmbeddedOSGiServiceProvider> embeddedOSGiServiceProviders;
 
-    private Collection<EmbeddedOSGiServiceProvider> embeddedOSGiServiceProviders = emptyList();
+    public EmbeddedOSGiContainer() {
+        this.embeddedOSGiServiceProviders = emptyList();
+    }
 
     public void addSystemPackage(String additionalPackage) {
         if (additionalPackage == null || "".equals(additionalPackage)) {
@@ -95,12 +98,12 @@ public class EmbeddedOSGiContainer {
     }
 
     public void setContainerConfiguration(ContainerConfiguration containerConfiguration) {
-        Objects.nonNull(containerConfiguration);
+        Objects.requireNonNull(containerConfiguration);
         this.containerConfiguration = containerConfiguration;
     }
 
     public void setEmbeddedOSGiServiceProviders(Collection<EmbeddedOSGiServiceProvider> providers) {
-        Objects.nonNull(providers);
+        Objects.requireNonNull(providers);
         this.embeddedOSGiServiceProviders = providers;
     }
 
@@ -109,7 +112,7 @@ public class EmbeddedOSGiContainer {
     }
 
     protected void configHostActivator(Map<String, Object> config) {
-        List<BundleActivator> activators = new ArrayList<BundleActivator>();
+        List<BundleActivator> activators = new ArrayList<>();
         activators.add(this.hostActivator);
         config.put(SYSTEMBUNDLE_ACTIVATORS_PROP, activators);
     }
@@ -146,7 +149,7 @@ public class EmbeddedOSGiContainer {
                     + System.identityHashCode(this.felix));
         } catch (BundleException | InterruptedException e) {
             this.logger.error(
-                "Error while shuting down embedded OSGi container: container-hashCode=" + System.identityHashCode(this.felix), e);
+                "Error while shutting down embedded OSGi container: container-hashCode=" + System.identityHashCode(this.felix), e);
         }
     }
 
@@ -155,7 +158,7 @@ public class EmbeddedOSGiContainer {
     }
 
     private Map<String, Object> createFelixContainerConfiguration() {
-        Map<String, Object> config = new HashMap<String, Object>();
+        Map<String, Object> config = new HashMap<>();
 
         this.configHostActivator(config);
         this.configSystemExtraClasspath(config);
@@ -164,10 +167,9 @@ public class EmbeddedOSGiContainer {
         return config;
     }
 
-    private BundleActivator createHostActivator() {
+    private void createHostActivator() {
         this.hostActivator = new HostActivator(
             this.containerConfiguration.areRemoteShellBundlesEnabled(), this.containerConfiguration.isSlf4jBridgeActivated());
-        return this.hostActivator;
     }
 
     private void destroyServiceProviders() {

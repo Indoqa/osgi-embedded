@@ -39,7 +39,9 @@ import org.slf4j.LoggerFactory;
  * <li>Felix Remote Shell</li>
  * </ul>
  */
-/* default */ class HostActivator implements BundleActivator {
+/* default */
+@SuppressWarnings("WeakerAccess")
+class HostActivator implements BundleActivator {
 
     private static final String INITIAL_BUNDLES_FOLDER = "initial-bundles/";
 
@@ -104,11 +106,11 @@ import org.slf4j.LoggerFactory;
             this.logger.error(msg, e);
             throw new EmbeddedOSGiContainerInitializationException(msg, e);
         } finally {
-            this.closeBundleInputStream(location, bundleInputStream);
+            closeBundleInputStream(location, bundleInputStream);
         }
     }
 
-    private void closeBundleInputStream(String resourceName, InputStream bundleInputStream) {
+    private static void closeBundleInputStream(String resourceName, InputStream bundleInputStream) {
         if (bundleInputStream == null) {
             return;
         }
@@ -148,7 +150,6 @@ import org.slf4j.LoggerFactory;
     }
 
     private enum BundleType {
-
         MANDATORY_BUNDLE, SLF4J_BRIDGE, REMOTE_SHELL_BUNDLE, LOCAL_SHELL_BUNDLE
     }
 }

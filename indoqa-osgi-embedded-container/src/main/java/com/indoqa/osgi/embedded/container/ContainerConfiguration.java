@@ -26,7 +26,8 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ContainerConfiguration {
+@SuppressWarnings("unused")
+public final class ContainerConfiguration {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ContainerConfiguration.class);
 
@@ -52,15 +53,15 @@ public class ContainerConfiguration {
     private static final String PROPERTY_REMOTE_SHELL_PORT = "osgi.shell.telnet.port";
     private static final String DEFAULT_REMOTE_SHELL_PORT = "6666";
 
+    private final Set<Path> fileInstallDirs = new HashSet<>();
     private Integer fileInstallPoll;
-    private Set<Path> fileInstallDirs = new HashSet<>();
     private Integer fileInstallLogLevel = DEFAULT_FILEINSTALL_LOG_LEVEL;
     private Boolean fileInstallNewStart;
     private String fileInstallFilter;
     private Path fileInstallTmpDir;
     private Boolean fileInstallNoInitialDelay;
     private Boolean fileInstallStartTransient;
-    private Boolean fileInstallStartActivitationPolicy;
+    private Boolean fileInstallStartActivationPolicy;
     private Integer fileInstallStartLevel;
     private Integer fileInstallActiveLevel;
     private Boolean fileInstallEnableConfigSave;
@@ -114,13 +115,13 @@ public class ContainerConfiguration {
         return this;
     }
 
-    public ContainerConfiguration setFileInstallPollIntervall(Integer poll) {
+    public ContainerConfiguration setFileInstallPollInterval(Integer poll) {
         this.fileInstallPoll = poll;
         return this;
     }
 
-    public ContainerConfiguration setFileInstallStartActivitationPolicy(Boolean startActivitationPolicy) {
-        this.fileInstallStartActivitationPolicy = startActivitationPolicy;
+    public ContainerConfiguration setFileInstallStartActivationPolicy(Boolean startActivationPolicy) {
+        this.fileInstallStartActivationPolicy = startActivationPolicy;
         return this;
     }
 
@@ -164,33 +165,33 @@ public class ContainerConfiguration {
         return this;
     }
 
-    protected void apply(Map<String, Object> config) {
-        this.applyProperty(config, PROPERTY_FILEINSTALL_POLL, this.fileInstallPoll);
-        this.applyProperty(config, PROPERTY_FILEINSTALL_LOG_LEVEL, this.fileInstallLogLevel);
-        this.applyProperty(config, PROPERTY_FILEINSTALL_NEW_START, this.fileInstallNewStart);
-        this.applyProperty(config, PROPERTY_FILEINSTALL_FILTER, this.fileInstallFilter);
-        this.applyProperty(config, PROPERTY_FILEINSTALL_TMP_DIR, this.fileInstallTmpDir);
-        this.applyProperty(config, PROPERTY_FILEINSTALL_NO_INITIAL_DELAY, this.fileInstallNoInitialDelay);
-        this.applyProperty(config, PROPERTY_FILEINSTALL_START_TRANSIENT, this.fileInstallStartTransient);
-        this.applyProperty(config, PROPERTY_FILEINSTALL_START_ACTIVATION_POLICY, this.fileInstallStartActivitationPolicy);
-        this.applyProperty(config, PROPERTY_FILEINSTALL_START_LEVEL, this.fileInstallStartLevel);
-        this.applyProperty(config, PROPERTY_FILEINSTALL_ACTIVE_LEVEL, this.fileInstallActiveLevel);
-        this.applyProperty(config, PROPERTY_FILEINSTALL_ENABLE_CONFIG_SAVE, this.fileInstallEnableConfigSave);
-        this.applyProperty(config, PROPERTY_FILEINSTALL_UPDATE_WITH_LISTENERS, this.fileInstallUpdateWithListeners);
+    void apply(Map<String, Object> config) {
+        ContainerConfiguration.applyProperty(config, PROPERTY_FILEINSTALL_POLL, this.fileInstallPoll);
+        ContainerConfiguration.applyProperty(config, PROPERTY_FILEINSTALL_LOG_LEVEL, this.fileInstallLogLevel);
+        ContainerConfiguration.applyProperty(config, PROPERTY_FILEINSTALL_NEW_START, this.fileInstallNewStart);
+        ContainerConfiguration.applyProperty(config, PROPERTY_FILEINSTALL_FILTER, this.fileInstallFilter);
+        ContainerConfiguration.applyProperty(config, PROPERTY_FILEINSTALL_TMP_DIR, this.fileInstallTmpDir);
+        ContainerConfiguration.applyProperty(config, PROPERTY_FILEINSTALL_NO_INITIAL_DELAY, this.fileInstallNoInitialDelay);
+        ContainerConfiguration.applyProperty(config, PROPERTY_FILEINSTALL_START_TRANSIENT, this.fileInstallStartTransient);
+        ContainerConfiguration.applyProperty(config, PROPERTY_FILEINSTALL_START_ACTIVATION_POLICY, this.fileInstallStartActivationPolicy);
+        ContainerConfiguration.applyProperty(config, PROPERTY_FILEINSTALL_START_LEVEL, this.fileInstallStartLevel);
+        ContainerConfiguration.applyProperty(config, PROPERTY_FILEINSTALL_ACTIVE_LEVEL, this.fileInstallActiveLevel);
+        ContainerConfiguration.applyProperty(config, PROPERTY_FILEINSTALL_ENABLE_CONFIG_SAVE, this.fileInstallEnableConfigSave);
+        ContainerConfiguration.applyProperty(config, PROPERTY_FILEINSTALL_UPDATE_WITH_LISTENERS, this.fileInstallUpdateWithListeners);
 
         this.applyFileInstallDirProperty(config);
 
         checkDirectory(this.frameworkStorage, PROPERTY_OSGI_STORAGE_DIR);
-        this.applyProperty(config, PROPERTY_OSGI_STORAGE_DIR, this.frameworkStorage.toAbsolutePath().toString());
+        ContainerConfiguration.applyProperty(config, PROPERTY_OSGI_STORAGE_DIR, this.frameworkStorage.toAbsolutePath().toString());
 
-        this.applyProperty(config, PROPERTY_OSGI_STORAGE_CLEAN, this.frameworkStorageClean);
+        ContainerConfiguration.applyProperty(config, PROPERTY_OSGI_STORAGE_CLEAN, this.frameworkStorageClean);
 
         if (this.areRemoteShellBundlesEnabled()) {
-            this.applyProperty(config, PROPERTY_REMOTE_SHELL_PORT, this.remoteShellPort);
+            applyProperty(config, PROPERTY_REMOTE_SHELL_PORT, this.remoteShellPort);
         }
     }
 
-    protected void applyFileInstallDirProperty(Map<String, Object> config) {
+    private void applyFileInstallDirProperty(Map<String, Object> config) {
         if (this.fileInstallDirs.isEmpty()) {
             throw new EmbeddedOSGiContainerInitializationException(
                 "The '" + PROPERTY_FILEINSTALL_DIR + "' directory is not set or empty");
@@ -203,18 +204,18 @@ public class ContainerConfiguration {
             absoluteFileInstallDirs.append(",");
         }
 
-        this.applyProperty(config, PROPERTY_FILEINSTALL_DIR, absoluteFileInstallDirs.toString());
+        applyProperty(config, PROPERTY_FILEINSTALL_DIR, absoluteFileInstallDirs.toString());
     }
 
-    protected boolean areRemoteShellBundlesEnabled() {
+    boolean areRemoteShellBundlesEnabled() {
         return this.remoteShellBundlesEnabled;
     }
 
-    protected boolean isSlf4jBridgeActivated() {
+    boolean isSlf4jBridgeActivated() {
         return this.slf4jBridgeActivated;
     }
 
-    private void applyProperty(Map<String, Object> config, String name, Object value) {
+    private static void applyProperty(Map<String, Object> config, String name, Object value) {
         if (value != null) {
             config.put(name, String.valueOf(value));
             LOGGER.info("Setting property '" + name + "': " + value);

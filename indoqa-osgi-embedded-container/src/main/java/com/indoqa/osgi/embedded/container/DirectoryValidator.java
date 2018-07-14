@@ -19,13 +19,13 @@ package com.indoqa.osgi.embedded.container;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-/*default*/ class DirectoryValidator {
+/*default*/ final class DirectoryValidator {
 
     private DirectoryValidator() {
         // hide utility class constructor
     }
 
-    public static void checkDirectory(Path directory, String type) {
+    static void checkDirectory(Path directory, String type) {
         if (directory == null) {
             throw new EmbeddedOSGiContainerInitializationException("The '" + type + "' directory is not set.");
         }

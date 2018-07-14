@@ -57,7 +57,7 @@ public class OSGiEmbeddedIntegrationTest {
             .setSlf4jBridgeActivated(true)
             .addFileInstallDir(bundlesDirectory)
             .setFileInstallNoInitialDelay(true)
-            .setFileInstallPollIntervall(250);
+            .setFileInstallPollInterval(250);
         Collection<EmbeddedOSGiServiceProvider> providers = this.initializeProviders();
 
         this.embeddedOSGiContainer = new EmbeddedOSGiContainer();
