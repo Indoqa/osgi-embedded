@@ -6,7 +6,7 @@
   Indoqa licenses this file to You under the Apache License, Version 2.0
   (the "License"); you may not use this file except in compliance with
   the License. You may obtain a copy of the License at
-  
+
   http://www.apache.org/licenses/LICENSE-2.0
 
   Unless required by applicable law or agreed to in writing, software
@@ -43,24 +43,28 @@
       <groupId>org.osgi</groupId>
       <artifactId>org.osgi.core</artifactId>
       <scope>provided</scope>
-    </dependency>    
+    </dependency>
   </dependencies>
-  
+
   <build>
     <plugins>
       <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
-        <version>3.0.1</version>
         <extensions>true</extensions>
         <configuration>
           <instructions>
             <Bundle-Activator>
               com.indoqa.osgi.embedded.sample.Activator
             </Bundle-Activator>
+            <!-- No EE requirement
+              see https://stackoverflow.com/questions/51138244/maven-bundle-plugin-osgi-ee-unknown
+              see https://issues.apache.org/jira/browse/FELIX-5879
+            -->
+            <_noee>true</_noee>
           </instructions>
         </configuration>
       </plugin>
     </plugins>
-  </build>  
+  </build>
 </project>

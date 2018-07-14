@@ -6,7 +6,7 @@
   Indoqa licenses this file to You under the Apache License, Version 2.0
   (the "License"); you may not use this file except in compliance with
   the License. You may obtain a copy of the License at
-  
+
   http://www.apache.org/licenses/LICENSE-2.0
 
   Unless required by applicable law or agreed to in writing, software
@@ -30,7 +30,7 @@
   <version>0.1.0-SNAPSHOT</version>
   <name>Indoqa OSGi Embedded Container</name>
   <description>
-    This module provides an embedded OSGi container that collects all available bundles from a particular directory, 
+    This module provides an embedded OSGi container that collects all available bundles from a particular directory,
     installs and finally starts them.
   </description>
 
@@ -40,7 +40,7 @@
       <groupId>com.indoqa.osgi</groupId>
       <artifactId>indoqa-osgi-embedded-services</artifactId>
     </dependency>
-    
+
     <!-- OSGi/Felix -->
     <dependency>
       <groupId>org.apache.felix</groupId>
@@ -50,8 +50,14 @@
       <groupId>org.osgi</groupId>
       <artifactId>org.osgi.compendium</artifactId>
       <scope>provided</scope><!-- provided by the Felix Log Bundle at runtime -->
-    </dependency>       
-    
+    </dependency>
+
+    <!-- JavaX Annotations -->
+    <dependency>
+      <groupId>javax.annotation</groupId>
+      <artifactId>javax.annotation-api</artifactId>
+    </dependency>
+
     <!-- Logging -->
     <dependency>
       <groupId>org.slf4j</groupId>
