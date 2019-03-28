@@ -34,7 +34,7 @@
   <properties>
     <project.build.compiler.version>1.8</project.build.compiler.version>
 
-    <felix-version>6.0.0</felix-version>
+    <felix-version>6.0.2</felix-version>
     <osgi-core-version>6.0.0</osgi-core-version>
     <osgi-compendium-version>5.0.0</osgi-compendium-version>
     <slf4j-version>1.7.21</slf4j-version>
