@@ -78,11 +78,13 @@
         <groupId>org.osgi</groupId>
         <artifactId>org.osgi.core</artifactId>
         <version>${osgi-core-version}</version>
+        <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>org.osgi</groupId>
         <artifactId>org.osgi.compendium</artifactId>
         <version>${osgi-compendium-version}</version>
+        <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>org.apache.felix</groupId>
@@ -107,6 +109,26 @@
         <groupId>org.slf4j</groupId>
         <artifactId>osgi-over-slf4j</artifactId>
         <version>${slf4j-version}</version>
+      </dependency>
+      <dependency>
+        <groupId>commons-logging</groupId>
+        <artifactId>commons-lo</artifactId>
+        <version>1.2.0</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>jcl-over-slf4j</artifactId>
+        <version>1.7.7</version>
+        <scope>provided</scope>
+      </dependency>
+
+      <!-- Servlet API -->
+      <dependency>
+        <groupId>javax.servlet</groupId>
+        <artifactId>javax.servlet-api</artifactId>
+        <version>3.1.0</version>
+        <scope>provided</scope>
       </dependency>
 
       <!-- Testing -->
